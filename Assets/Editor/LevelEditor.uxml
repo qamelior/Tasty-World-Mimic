@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <uie:ObjectField label="Meals Collection Reference" name="MealsCollection" type="Game.Data.FoodCollection,Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" binding-path="_foodCollection" />
+    <ui:VisualElement name="NewFile" style="flex-grow: 0; flex-direction: row;">
+        <ui:TextField picking-mode="Ignore" label="Levels data folder path" value="filler text" text="LevelData/" focusable="false" password="false" readonly="true" multiline="false" is-delayed="false" name="LevelsFolderPath" style="opacity: 0.5; flex-grow: 1;" />
+        <ui:Button text="New file" display-tooltip-when-elided="true" name="CreateNewLevel" style="padding-left: 12px; padding-right: 12px; width: 65px;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="SelectFilePanel" style="flex-direction: row;">
+        <uie:ObjectField allow-scene-objects="false" label="Select level file to edit" type="UnityEngine.TextAsset, UnityEngine.CoreModule" name="SelectedFile" binding-path="_selectedFile" style="-unity-text-align: middle-left; flex-grow: 1;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="EditPanel">
+        <uie:PropertyField label="JSON Level Data" binding-path="_levelData" name="SelectedLevelInspector" />
+        <ui:Button text="Edit" display-tooltip-when-elided="true" name="EditFileButton" />
+        <ui:Button text="Save" display-tooltip-when-elided="true" name="SaveFileButton" binding-path="_mealsCollection" />
+    </ui:VisualElement>
+</ui:UXML>

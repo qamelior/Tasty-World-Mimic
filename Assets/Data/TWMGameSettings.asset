@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 878f8152bbdcb154cb307cd71c75f92c, type: 3}
+  m_Name: TWMGameSettings
+  m_EditorClassIdentifier: 
+  Levels:
+    LevelFile: {fileID: 4900000, guid: 384b5b18db8314b40b4c8a8e9ca00168, type: 3}
+    Food: {fileID: 11400000, guid: 5e0c49a2d93669e46a2bb318542af7fc, type: 2}
+  Restaurant:
+    ServedFood: {fileID: 11400000, guid: 5e0c49a2d93669e46a2bb318542af7fc, type: 2}
+    MealSources:
+    - MealType: {fileID: 11400000, guid: 7163d6be5dad1314781c8eff18743f2e, type: 2}
+      LocalPosition: {x: -6, y: 0, z: 0}
+    - MealType: {fileID: 11400000, guid: ab0f6df78d485764082b4174f081cc3c, type: 2}
+      LocalPosition: {x: -2, y: 0, z: 0}
+    - MealType: {fileID: 11400000, guid: 831885508ed3b7242a3f7287482acadc, type: 2}
+      LocalPosition: {x: 2, y: 0, z: 0}
+    - MealType: {fileID: 11400000, guid: 7bba3a491f57b6548ad810b8755ff77b, type: 2}
+      LocalPosition: {x: 6, y: 0, z: 0}
+    CustomerRoutes:
+    - SpawnPoint: {x: -12.5, y: 0, z: 0}
+      DestinationPoint: {x: -4.5, y: 0, z: 0}
+    - SpawnPoint: {x: -9.5, y: 0, z: 0}
+      DestinationPoint: {x: -1.5, y: 0, z: 0}
+    - SpawnPoint: {x: -6.5, y: 0, z: 0}
+      DestinationPoint: {x: 1.5, y: 0, z: 0}
+    - SpawnPoint: {x: -3.5, y: 0, z: 0}
+      DestinationPoint: {x: 4.5, y: 0, z: 0}
+  Customer:
+    MovementDuration: 5
+  MealSource:
+    DefaultColor: {r: 0.5019608, g: 0.6666667, b: 0.76470596, a: 1}
+    MouseOverColor: {r: 0.24328054, g: 0.5461411, b: 0.7264151, a: 1}
+  Prefabs:
+    MealSource: {fileID: 2968472729661021431, guid: 55ca1db9ca913274ba5fa379b9454e81, type: 3}
+    CustomerSpot: {fileID: 5150928068396197209, guid: 7f5be063b0dfe9b44b6807fd2a03503b, type: 3}
+    Customer: {fileID: 5150928068396197209, guid: 524e357b9466d0846b5c877e96011c42, type: 3}

@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="/Assets/GUI/USS/CustomerUSS.uss" />
+    <ui:VisualElement name="Root" style="background-image: url(&apos;/Assets/Sprites/white rect.png&apos;); -unity-background-image-tint-color: rgb(99, 99, 99); height: 400px; width: 210px; justify-content: center; align-items: center;">
+        <ui:VisualElement name="Background" style="width: 96%; height: 97%; position: absolute; -unity-background-image-tint-color: rgb(236, 229, 219); align-items: center; display: flex;">
+            <ui:Label text="Order" display-tooltip-when-elided="true" name="Header" style="color: rgb(255, 255, 255); -unity-text-align: upper-center; font-size: 24px;" />
+            <ui:VisualElement name="OrdersHolder" style="justify-content: space-around; flex-grow: 1; width: 100%; align-items: center;">
+                <ui:VisualElement name="First" class="order-icon">
+                    <ui:Label text="Meal A" display-tooltip-when-elided="true" name="FirstLabel" class="order-label" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Second" class="order-icon">
+                    <ui:Label text="Meal B" display-tooltip-when-elided="true" name="SecondLabel" class="order-label" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Third" class="order-icon">
+                    <ui:Label text="Meal C" display-tooltip-when-elided="true" name="ThirdLabel" class="order-label" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

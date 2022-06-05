@@ -14,6 +14,9 @@ EditorUserSettings:
     RecentlyUsedScenePath-2:
       value: 22424703114646680e0b0227036c6d150503193f3e292824633c133af6f9
       flags: 0
+    UIBuilder.DisableMouseWheelZooming:
+      value: 2550581500
+      flags: 0
     UIBuilder.EditorExtensionModeKey:
       value: 37434103
       flags: 0
