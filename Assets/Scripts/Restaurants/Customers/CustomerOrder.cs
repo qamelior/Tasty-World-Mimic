@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Restaurants.Customers
 {
     [Serializable]
-    public class CustomerOrder : IDisposable
+    public class CustomerOrder
     {
         public CustomerOrderPreset Preset { private set; get; }
         private List<string> _mealsToDeliver;
@@ -44,13 +44,6 @@ namespace Restaurants.Customers
             if (_mealsToDeliver.Count == 0)
                 _onOrderFulfilled?.Invoke();
             return true;
-        }
-
-        public void Dispose()
-        {
-            _onMealDelivered = null;
-            _onOrderFulfilled = null;
-            //TODO implement this
         }
     }
 }

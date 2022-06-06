@@ -16,15 +16,27 @@ namespace Game.Data.Levels
         private readonly LevelGUI _ui;
         private LevelData _levelData;
         private readonly LevelTimer _timer;
-        private readonly ReactiveProperty<Vector2Int> _servedCustomers;
+        private ReactiveProperty<Vector2Int> _servedCustomers;
         private readonly Settings _settings;
+        private Action _onLevelCompleted;
+        private Action _onLevelFailed;
+        public event Action OnLevelCompleted
+        {
+            add => _onLevelCompleted += value;
+            remove => _onLevelCompleted -= value;
+        }
+        public event Action OnLevelFailed
+        {
+            add => _onLevelFailed += value;
+            remove => _onLevelFailed -= value;
+        }
         
         public LevelManager(LevelGUI levelGUI, Settings settings)
         {
             _settings = settings;
             _servedCustomers = new ReactiveProperty<Vector2Int>();
             _ui = levelGUI;
-            _timer = new LevelTimer(_ui.UpdateLevelTimer, OnTimeOut);
+            _timer = new LevelTimer(_ui.UpdateLevelTimer, _onLevelFailed);
             _servedCustomers.Subscribe(_ui.UpdateCustomersNumber);
         }
 
@@ -40,26 +52,11 @@ namespace Game.Data.Levels
 
         private void OnCustomerServed()
         {
-            _servedCustomers.Value.ChangeX(-1);
+            _servedCustomers.Value = _servedCustomers.Value.ChangeX(1);
             if (_servedCustomers.Value.x == _servedCustomers.Value.y)
             {
-                CompleteLevel();
+                _onLevelCompleted?.Invoke();
             }
-        }
-
-        private void CompleteLevel()
-        {
-            
-        }
-        
-        private void OnTimeOut()
-        {
-            
-        }
-
-        public void RestartLevel()
-        {
-
         }
 
         [Serializable]
@@ -97,7 +94,7 @@ namespace Game.Data.Levels
                     _levelTimer.Value -= 1;
                     if (_levelTimer.Value <= 0)
                     {
-                        _timeOutEvent.Invoke();
+                        _timeOutEvent?.Invoke();
                         break;
                     }
                 }

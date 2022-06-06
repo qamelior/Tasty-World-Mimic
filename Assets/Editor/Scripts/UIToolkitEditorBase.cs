@@ -6,13 +6,15 @@ using UnityEngine.UIElements;
 [CustomEditor(typeof(MonoBehaviour))]
 public class UIToolkitEditorBase : Editor
 {
-    [SerializeField] private VisualTreeAsset _inspectorXML;
+    public VisualTreeAsset InspectorXML;
     protected VisualElement _inspector;
 
     public override VisualElement CreateInspectorGUI()
     {
         _inspector = new VisualElement();
-        _inspectorXML.CloneTree(_inspector);
+        if (InspectorXML == null)
+            InspectorXML = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/LevelEditor.uxml");
+        InspectorXML.CloneTree(_inspector);
 
         return _inspector;
     }

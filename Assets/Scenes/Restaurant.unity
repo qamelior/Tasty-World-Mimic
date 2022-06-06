@@ -581,17 +581,9 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 5786492e4077316449c80577170c1da1, type: 2}
     - {fileID: 11400000, guid: 850b2cf2888daf14b8d93b5239fce881, type: 2}
     - {fileID: 11400000, guid: 2f7f1a7787f85854686f4b494fc03e6c, type: 2}
-    OrderStrings:
-    - AD
-    - DD
-    - DD
-    - DD
-    - DD
-    - C
-    - CD
-    - A
-    TotalMealsNumber: 0
-    CustomersCount: 0
+    OrderStrings: []
+    TotalMealsNumber: 14
+    CustomersCount: 8
     MaxMealsInOneOrder: 0
 --- !u!4 &588743296
 Transform:
@@ -654,7 +646,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: b6d5a2bcb0d904d4c8cd6e7e518260f5, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 2ff448756eac06c488d7c9f7250eaee0, type: 3}
-  m_SortingOrder: 0
+  m_SortingOrder: 1
 --- !u!114 &670421626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -667,11 +659,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29bcb39e961cad24c8882c9565b2c6e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LevelTimerID: LevelTimer
-  CustomersNumberID: CustomerCount
-  LevelFinishedViewID: LevelFinishedView
-  LevelFinishedHeaderID: LevelFinishedHeader
-  RestartButtonID: RestartButton
+  _levelTimerID: LevelTimer
+  _customersNumberID: CustomerCount
+  _openMenuButtonID: PauseButton
+  _menuID: Menu
+  _menuHeaderID: MenuHeader
+  _continueButtonID: Continue
+  _getBoostButtonID: GetBoost
+  _restartButtonID: RestartButton
+  _quitButtonID: QuitButton
 --- !u!1 &790584184
 GameObject:
   m_ObjectHideFlags: 0
@@ -1263,7 +1259,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1395461785}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 15.79}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 790584185}

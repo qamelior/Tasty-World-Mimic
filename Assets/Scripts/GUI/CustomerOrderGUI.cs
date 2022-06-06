@@ -27,7 +27,7 @@ namespace GUI
             var orderedMeals = order.Preset.Meals;
             for (var i = 0; i < _mealUI.Length; i++)
             {
-                if (i < orderedMeals.Length - 1)
+                if (i < orderedMeals.Length)
                     _mealUI[i].Show(orderedMeals[i].DisplayName, orderedMeals[i].UID);
                 else
                     _mealUI[i].Hide();

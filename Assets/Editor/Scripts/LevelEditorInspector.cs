@@ -18,7 +18,6 @@ public class LevelEditorInspector : UIToolkitEditorBase
     private const string SerializedLevelDataBlockID = "SelectedLevelInspector";
     private const string MealCollectionSelectorID = "FoodCollectionSelector";
 
-
     public override VisualElement CreateInspectorGUI()
     {
         base.CreateInspectorGUI();

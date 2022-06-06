@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.ComponentModel.Design.Serialization;
 using _Extensions;
+using Game;
 using TMPro;
 using UnityEngine;
 using Zenject;
@@ -14,8 +16,12 @@ namespace Restaurants.Customers
         private Vector3 _spawnLocation;
         private Vector3 _spotLocation;
     
-        private Action _onDestinationReached;
-        private float _movementSpeed;
+        private Action _onArrive;
+        public event Action OnArrive
+        {
+            add => _onArrive += value;
+            remove => _onArrive -= value;
+        }
         private Settings _settings;
 
         [Inject]
@@ -24,29 +30,33 @@ namespace Restaurants.Customers
             _settings = settings;
         }
 
-        public void Init(Vector3 destination, string id, Action onArrive)
+        public void Init(Vector3 destination, string id)
         {
             _idLabelRef.text = $"{id}";
-            _spawnLocation = transform.localPosition;
+            _spawnLocation = transform.position;
             _spotLocation = destination;
-            _onDestinationReached += onArrive;
-        
-            _state = State.Entering;
-            _movementSpeed = Vector3.Distance(_spawnLocation, _spotLocation) / _settings.MovementDuration;
+            _state = State.Spawned;
+            IterateState();
         }
 
         private IEnumerator Move(Vector3 destination)
         {
-            while (!Extensions.IsClose(transform.localPosition, destination))
+            var t = 0f;
+            float moveDuration = _settings.MovementDuration;
+            float lerpSpeedMod = 1f / moveDuration;
+            var origin = transform.position;
+            while (t < moveDuration)
             {
-                transform.localPosition =
-                    Vector3.Lerp(transform.localPosition, destination, _movementSpeed * Time.deltaTime);
+                transform.position = Vector3.Lerp(origin, destination, lerpSpeedMod * t);
+                t += Time.deltaTime;
                 yield return null;
             }
+
+            transform.position = destination;
             IterateState();
         }
 
-        public void LeaveRestaurant()
+        public void MoveToExit()
         {
             if (_state != State.WaitingForOrder)
             {
@@ -65,7 +75,7 @@ namespace Restaurants.Customers
                     StartCoroutine(Move(_spotLocation));
                     break;
                 case State.Entering:
-                    _onDestinationReached?.Invoke();
+                    _onArrive?.Invoke();
                     break;
                 case State.WaitingForOrder:
                     StartCoroutine(Move(_spawnLocation));
@@ -76,6 +86,13 @@ namespace Restaurants.Customers
             }
 
             _state++;
+            OnStateChanged();
+        }
+
+        private void OnStateChanged()
+        {
+            if (GameController.ShowDebugLogs)
+                Debug.Log($"Customer {_idLabelRef.text} is now {_state}");
         }
 
         private enum State

@@ -32,9 +32,9 @@ namespace _Extensions
             return elem;
         }
 
-        public static void ChangeX(this Vector2Int v2, int change)
+        public static Vector2Int ChangeX(this Vector2Int v2, int value)
         {
-            v2.x += change;
+            return new Vector2Int(v2.x + value, v2.y);
         }
 
         public static void SetWorldPosition(this VisualElement el, Vector3 worldPosition, Camera camera = null)

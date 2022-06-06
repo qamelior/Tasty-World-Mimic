@@ -12,11 +12,11 @@ namespace GUI
         [SerializeField] private string StartLevelButtonID = "StartLevelButton";
     
         private VisualElement _menuBackground;
-        private Action _onStartButtonClicked;
-        public event Action OnStartButtonClicked
+        private Action _onStart;
+        public event Action OnStart
         {
-            add => _onStartButtonClicked += value;
-            remove => _onStartButtonClicked -= value;
+            add => _onStart += value;
+            remove => _onStart -= value;
         }
 
         protected override void OnEnable()
@@ -24,8 +24,8 @@ namespace GUI
             base.OnEnable(); 
             _menuBackground = _root.FindVisualElement<VisualElement>(MenuRootID);
             _menuBackground.SetVisibility(true);
-            _onStartButtonClicked += () => _menuBackground.SetVisibility(false);
-            _root.FindVisualElement<Button>(StartLevelButtonID)?.RegisterCallback<ClickEvent>(evt =>_onStartButtonClicked?.Invoke());
+            _onStart += () => gameObject.SetActive(false);
+            _root.FindVisualElement<Button>(StartLevelButtonID)?.RegisterCallback<ClickEvent>(evt =>_onStart?.Invoke());
         }
     }
 }

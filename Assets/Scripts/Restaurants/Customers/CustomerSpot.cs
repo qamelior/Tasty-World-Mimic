@@ -1,5 +1,6 @@
 using System;
 using _Extensions;
+using Game;
 using UnityEngine;
 using Zenject;
 
@@ -7,8 +8,7 @@ namespace Restaurants.Customers
 {
     public class CustomerSpot : MonoBehaviour
     {
-        private Vector3 _spawnLocation;
-        private Vector3 _destinationLocation;
+        private Vector3 _customerSpawnLocation;
         [SerializeField] private Transform _customersSpawnRoot;
         public Transform CustomerSpawnRoot => _customersSpawnRoot;
         private CustomerOrder _order;
@@ -23,33 +23,34 @@ namespace Restaurants.Customers
             _customerFactory = customerFactory;
         }
 
-        public void Setup(Vector3 from, Vector3 to, Action<CustomerSpot> onVacate)
+        public void Setup(Vector3 customerSpawnLocation, Action<CustomerSpot> onVacate)
         {
-            _spawnLocation = from;
-            _destinationLocation = to;
+            _customerSpawnLocation = customerSpawnLocation;
             _customersSpawnRoot.DestroyChildren();
             _orderGUI = GetComponent<GUI.CustomerOrderGUI>();
+            _orderGUI.HideAll();
             _onSpotVacated += onVacate;
         }
 
-        public void SpawnCustomer(string id, CustomerOrder order)
+        public void SpawnCustomer(string id, CustomerOrder order, Action onArrive)
         {
-            var c = _customerFactory.Create();
-            c.transform.localPosition = _spawnLocation;
-            c.Init(_destinationLocation, id, OnCustomerArrive);
+            var customer = _customerFactory.Create();
+            
+            var customerTransform = customer.transform;
+            customerTransform.SetParent(_customersSpawnRoot);
+            customerTransform.position = _customerSpawnLocation;
+            
+            if (GameController.ShowDebugLogs)
+                Debug.LogFormat($"Spawning customer {id} with order: {order.Preset.UID}");
+            customer.Init(transform.position, id);
+            customer.OnArrive += onArrive;
+            customer.OnArrive += () => _orderGUI.ShowAll(_order); 
             _order = order;
             _order.OnMealDelivered += _orderGUI.HideMeal;
-            _order.OnOrderFulfilled += c.LeaveRestaurant;
-            _order.OnOrderFulfilled += OnOrderFulfilled;
+            _order.OnOrderFulfilled += customer.MoveToExit;
+            _order.OnOrderFulfilled += () =>_orderGUI.HideAll();
+            _order.OnOrderFulfilled += () => _onSpotVacated?.Invoke(this);
         }
-
-        private void OnOrderFulfilled()
-        {
-            _orderGUI.HideAll();
-            _onSpotVacated?.Invoke(this);
-        }
-
-        private void OnCustomerArrive() { _orderGUI.ShowAll(_order); }
 
         public class Factory : PlaceholderFactory<CustomerSpot>
         {

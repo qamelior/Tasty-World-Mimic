@@ -1,7 +1,4 @@
-using System;
 using Game.Data.Levels;
-using Restaurants.Customers;
-using UnityEngine;
 using Zenject;
 
 namespace Game
@@ -10,8 +7,6 @@ namespace Game
     {
         public override void InstallBindings()
         {
-            
-            Container.Bind<Restaurants.Restaurant>().AsSingle();
             Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
             Container.Bind<LevelManager>().AsSingle();
         }

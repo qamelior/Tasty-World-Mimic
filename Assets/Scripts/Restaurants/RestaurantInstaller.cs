@@ -15,21 +15,15 @@ namespace Restaurants
         public override void InstallBindings()
         {
             ClearSpawnTransforms();
-
+            Container.Bind<Restaurant>().AsSingle().WithArguments(_mealSourcesHolder, _customerSpotHolder);
             Container.BindFactory<Customer, Customer.Factory>().FromComponentInNewPrefab(_prefabs.Customer)
-                .WithGameObjectName("Customer").UnderTransform(GetCustomerSpawnRoot);
+                .WithGameObjectName("Customer");
             
             Container.BindFactory<MealSource, MealSource.Factory>().FromComponentInNewPrefab(_prefabs.MealSource)
                 .WithGameObjectName("MealSource").UnderTransform(_mealSourcesHolder);
             
             Container.BindFactory<CustomerSpot, CustomerSpot.Factory>().FromComponentInNewPrefab(_prefabs.CustomerSpot)
                 .WithGameObjectName("CustomerSpot").UnderTransform(_customerSpotHolder);
-            
-            Transform GetCustomerSpawnRoot(InjectContext context)
-            {
-                var spot = context.ObjectInstance as CustomerSpot;
-                return spot != null ? spot.CustomerSpawnRoot : null;
-            }
         }
         
 

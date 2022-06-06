@@ -13,16 +13,19 @@ namespace Restaurants
 {
     public class Restaurant
     {
-        private Stack<CustomerOrder> _orders;
-        private Stack<CustomerOrder> _activeOrders;
+        private Queue<CustomerOrder> _orders;
+        private List<CustomerOrder> _activeOrders;
         private int _customerIDCounter;
         private Action _onCustomerServed;
-        private CustomerOrder GetNextOrder() { return _orders.Count == 0 ? null : _orders.Pop(); }
+        private CustomerOrder GetNextOrder() { return _orders.Count == 0 ? null : _orders.Dequeue(); }
         private readonly CustomerSpot.Factory _customerSpotFactory;
         private readonly Settings _settings;
-        
-        public Restaurant(CustomerSpot.Factory customerSpotFactory, MealSource.Factory mealSourceFactory, Settings settings)
+        private Transform _mealSourcesHolder;
+        private Transform _customersHolder;
+        public Restaurant(Transform mealSourcesHolder, Transform customersHolder, CustomerSpot.Factory customerSpotFactory, MealSource.Factory mealSourceFactory, Settings settings)
         {
+            _mealSourcesHolder = mealSourcesHolder;
+            _customersHolder = customersHolder;
             _customerSpotFactory = customerSpotFactory;
             _settings = settings;
             SpawnMealSources();
@@ -40,6 +43,7 @@ namespace Restaurants
 
         public void StartLevel(LevelData levelData,  Action onCustomerServed)
         {
+            MopTheFloor();
             _customerIDCounter = 1;
             CreateOrders();
             var customerSpots = CreateSpots();
@@ -48,10 +52,11 @@ namespace Restaurants
 
             void CreateOrders()
             {
-                _orders = new Stack<CustomerOrder>();
+                _orders = new Queue<CustomerOrder>();
+                _activeOrders = new List<CustomerOrder>();
                 var presets = levelData.GenerateOrders(_settings.ServedFood);
                 foreach (var p in presets)
-                    _orders.Push(new CustomerOrder(p));
+                    _orders.Enqueue(new CustomerOrder(p));
             }
 
             List<CustomerSpot> CreateSpots()
@@ -61,8 +66,8 @@ namespace Restaurants
                 foreach (var route in routes)
                 {
                     var spot = _customerSpotFactory.Create();
-                    spot.Setup(route.SpawnPoint, route.DestinationPoint, TrySpawnNextCustomer);
-                    spot.transform.localPosition = route.DestinationPoint;
+                    spot.transform.position = route.SpotLocation;
+                    spot.Setup(route.CustomerSpawnLocation, TrySpawnNextCustomer);
                     spots.Add(spot);
                 }
                 return spots;
@@ -70,10 +75,14 @@ namespace Restaurants
  
             void SpawnCustomers(List<CustomerSpot> spots)
             {
-                _activeOrders = new Stack<CustomerOrder>();
                 foreach (var spot in spots)
                     TrySpawnNextCustomer(spot);
             }
+        }
+
+        private void MopTheFloor()
+        {
+            _customersHolder.DestroyChildren();
         }
 
         private void TrySpawnNextCustomer(CustomerSpot spot)
@@ -82,19 +91,25 @@ namespace Restaurants
             if (order == null)
                 return;
 
-            _activeOrders.Push(order);
-            order.OnOrderFulfilled += _onCustomerServed;
-            spot.SpawnCustomer($"{_customerIDCounter++}", order);
+            order.OnOrderFulfilled += () => _onCustomerServed?.Invoke();
+            order.OnOrderFulfilled += () => _activeOrders.Remove(order);
+            spot.SpawnCustomer($"{_customerIDCounter++}", order, () => _activeOrders.Add(order));
         }
 
         private void OnMealClicked(string mealID)
         {
             if (_activeOrders == null)
                 return;
+            if (Game.GameController.ShowDebugLogs)
+                Debug.Log($"Trying to deliver {mealID}.\nActive orders count:{_activeOrders.Count}");
             foreach (var order in _activeOrders)
             {
                 if (order.TryDeliverMeal(mealID))
+                {
+                    if (Game.GameController.ShowDebugLogs)
+                        Debug.Log($"Delivered {mealID} to {order.Preset}");
                     break;
+                }
             }
         }
 
@@ -116,8 +131,8 @@ namespace Restaurants
             [Serializable]
             public class CustomerRoute
             {
-                public Vector3 SpawnPoint;
-                public Vector3 DestinationPoint;
+                public Vector3 SpotLocation;
+                public Vector3 CustomerSpawnLocation;
             }
         }
     }

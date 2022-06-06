@@ -27,14 +27,14 @@ MonoBehaviour:
     - MealType: {fileID: 11400000, guid: 7bba3a491f57b6548ad810b8755ff77b, type: 2}
       LocalPosition: {x: 6, y: 0, z: 0}
     CustomerRoutes:
-    - SpawnPoint: {x: -12.5, y: 0, z: 0}
-      DestinationPoint: {x: -4.5, y: 0, z: 0}
-    - SpawnPoint: {x: -9.5, y: 0, z: 0}
-      DestinationPoint: {x: -1.5, y: 0, z: 0}
-    - SpawnPoint: {x: -6.5, y: 0, z: 0}
-      DestinationPoint: {x: 1.5, y: 0, z: 0}
-    - SpawnPoint: {x: -3.5, y: 0, z: 0}
-      DestinationPoint: {x: 4.5, y: 0, z: 0}
+    - SpotLocation: {x: -4.5, y: 2, z: 0}
+      CustomerSpawnLocation: {x: -12.5, y: 2, z: 0}
+    - SpotLocation: {x: -1.5, y: 2, z: 0}
+      CustomerSpawnLocation: {x: -12.5, y: 2, z: 0}
+    - SpotLocation: {x: 1.5, y: 2, z: 0}
+      CustomerSpawnLocation: {x: 12.5, y: 2, z: 0}
+    - SpotLocation: {x: 4.5, y: 2, z: 0}
+      CustomerSpawnLocation: {x: 12.5, y: 2, z: 0}
   Customer:
     MovementDuration: 5
   MealSource:
