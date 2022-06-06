@@ -23,6 +23,11 @@ namespace _Extensions
         {
             el.style.display = mode ? DisplayStyle.Flex : DisplayStyle.None;
         }
+
+        public static bool IsVisible(this VisualElement el)
+        {
+            return el.style.display == DisplayStyle.Flex;
+        }
     
         public static T FindVisualElement<T>(this VisualElement root, string elementName) where T : VisualElement
         {

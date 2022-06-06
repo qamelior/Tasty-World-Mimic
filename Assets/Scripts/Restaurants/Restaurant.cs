@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using _Extensions;
+using Game;
 using Game.Data;
 using Game.Data.Levels;
 using GUI;
@@ -30,7 +31,8 @@ namespace Restaurants
             remove => _onOrderEnforced -= value;
         }
         
-        public Restaurant(Transform mealSourcesHolder, Transform customersHolder, CustomerSpot.Factory customerSpotFactory, MealSource.Factory mealSourceFactory, Settings settings)
+        public Restaurant(Transform mealSourcesHolder, Transform customersHolder,
+            CustomerSpot.Factory customerSpotFactory, MealSource.Factory mealSourceFactory, Settings settings)
         {
             _mealSourcesHolder = mealSourcesHolder;
             _customersHolder = customersHolder;

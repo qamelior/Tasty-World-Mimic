@@ -40,7 +40,7 @@ namespace GUI
         {
             foreach (var elem in _mealUI)
             {
-                if (elem.MealID == mealID)
+                if (elem.IsVisible && elem.MealID == mealID)
                 {
                     elem.Hide();
                     return;
@@ -53,6 +53,7 @@ namespace GUI
             private readonly VisualElement _container;
             private readonly Label _label;
             public string MealID { private set; get; }
+            public bool IsVisible => _container.IsVisible();
 
             public OrderMealUI(VisualElement root, string containerID, string labelID)
             {

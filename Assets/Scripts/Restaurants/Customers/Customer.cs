@@ -23,10 +23,12 @@ namespace Restaurants.Customers
             remove => _onArrive -= value;
         }
         private Settings _settings;
-
+        private GameController _gameController;
+        
         [Inject]
-        public void Construct(Settings settings)
+        public void Construct(GameController gameController, Settings settings)
         {
+            _gameController = gameController;
             _settings = settings;
         }
 
@@ -47,8 +49,11 @@ namespace Restaurants.Customers
             var origin = transform.position;
             while (t < moveDuration)
             {
-                transform.position = Vector3.Lerp(origin, destination, lerpSpeedMod * t);
-                t += Time.deltaTime;
+                if (!_gameController.GameIsPaused)
+                {
+                    transform.position = Vector3.Lerp(origin, destination, lerpSpeedMod * t);
+                    t += Time.deltaTime;
+                }
                 yield return null;
             }
 

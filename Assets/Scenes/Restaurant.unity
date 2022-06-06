@@ -677,6 +677,8 @@ MonoBehaviour:
   _getBoostButtonID: GetBoost
   _restartButtonID: RestartButton
   _quitButtonID: QuitButton
+  _useBoostButtonID: GetFixButton
+  _boostCounterID: BoostsCounter
 --- !u!1 &790584184
 GameObject:
   m_ObjectHideFlags: 0

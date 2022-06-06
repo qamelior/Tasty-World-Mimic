@@ -13,7 +13,7 @@ namespace Game
         private readonly Data.Levels.LevelManager _levelManager;
         private readonly Action<float> _gamePlayLoop;
         private readonly Restaurant _restaurant;
-
+        public bool GameIsPaused => _currentGameState != GameStates.Playing;
         public GameController(MainMenuGUI menuUI, LevelGUI levelGUI, Restaurant restaurant, Data.Levels.LevelManager levelManager)
         {
             _restaurant = restaurant;

@@ -97,13 +97,12 @@ namespace Game.Data.Levels
             writer.Write(JsonConvert.SerializeObject(_levelData));
         }
 
-        public static bool GetLevelDataFromJSON(TextAsset file, ref LevelData data, FoodCollection foodCollection)
+        public static void GetLevelDataFromJSON(TextAsset file, ref LevelData data, FoodCollection foodCollection)
         {
-            if (file == null) return false;
+            if (file == null) return;
 
             data = JsonConvert.DeserializeObject<LevelData>(file.text);
             data.DeserializeMeals(foodCollection);
-            return true;
         }
 
         private bool GetLevelDataFromJSON(string path)
