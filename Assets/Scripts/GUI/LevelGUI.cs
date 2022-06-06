@@ -2,6 +2,7 @@ using System;
 using _Extensions;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zenject;
 
 namespace GUI
 {
@@ -28,6 +29,8 @@ namespace GUI
         private VisualElement _menu;
         private Label _menuHeader;
         private Label _boostsNumber;
+        private Button _continueButton;
+        private Button _getBoostButton;
 
         private Action<MenuMode> _onMenuModeSwitch;
         private Action _onGetBoostClick;
@@ -59,20 +62,22 @@ namespace GUI
             add => _onQuitClick += value;
             remove => _onQuitClick -= value;
         }
-        
-        protected override void OnEnable()
+
+        [Inject]
+        public override void Construct()
         {
-            base.OnEnable();
+            base.Construct();
             _levelTimer = _root.FindVisualElement<Label>(_levelTimerID);
             _customersNumber = _root.FindVisualElement<Label>(_customersNumberID);
-            //level finished window
             _menu = _root.FindVisualElement<VisualElement>(_menuID);
             _menu.SetVisibility(false);
             _menuHeader = _root.FindVisualElement<Label>(_menuHeaderID);
             _onRestartClick += () => ToggleMenu(MenuMode.Closed);
             _root.FindVisualElement<Button>(_openMenuButtonID)?.RegisterCallback<ClickEvent>(evt => ToggleMenu(MenuMode.Paused));
-            _root.FindVisualElement<Button>(_continueButtonID)?.RegisterCallback<ClickEvent>(evt => ToggleMenu(MenuMode.Closed));
-            _root.FindVisualElement<Button>(_getBoostButtonID)?.RegisterCallback<ClickEvent>(evt => _onGetBoostClick?.Invoke());
+            _continueButton = _root.FindVisualElement<Button>(_continueButtonID);
+            _continueButton?.RegisterCallback<ClickEvent>(evt => ToggleMenu(MenuMode.Closed));
+            _getBoostButton = _root.FindVisualElement<Button>(_getBoostButtonID);
+            _getBoostButton?.RegisterCallback<ClickEvent>(evt => _onGetBoostClick?.Invoke());
             _root.FindVisualElement<Button>(_restartButtonID)?.RegisterCallback<ClickEvent>(evt => _onRestartClick?.Invoke());
             _root.FindVisualElement<Button>(_quitButtonID)?.RegisterCallback<ClickEvent>(evt => _onQuitClick?.Invoke());
             _root.FindVisualElement<Button>(_useBoostButtonID)?.RegisterCallback<ClickEvent>(evt => _onSpendBoostClick?.Invoke());
@@ -101,12 +106,18 @@ namespace GUI
             {
                 case MenuMode.Paused:
                     _menuHeader.text = "Paused"; 
+                    _continueButton.SetVisibility(true);
+                    _getBoostButton.SetVisibility(true);
                     break;
                 case MenuMode.LevelCompleted:
                     _menuHeader.text = "Level completed!";
+                    _continueButton.SetVisibility(false);
+                    _getBoostButton.SetVisibility(false);
                     break;
                 case MenuMode.LevelFailed:
                     _menuHeader.text = "Level failed!";
+                    _continueButton.SetVisibility(false);
+                    _getBoostButton.SetVisibility(false);
                     break;
             }
             _onMenuModeSwitch?.Invoke(mode);

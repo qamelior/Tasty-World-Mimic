@@ -567,33 +567,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _foodCollection: {fileID: 11400000, guid: 5e0c49a2d93669e46a2bb318542af7fc, type: 2}
-  _selectedFile: {fileID: 4900000, guid: 384b5b18db8314b40b4c8a8e9ca00168, type: 3}
+  _selectedFile: {fileID: 4900000, guid: f6139a30edbab9c41b6fc8f6e52dcad6, type: 3}
   _levelData:
-    DisplayName: 
-    Type: 1
-    NumberOfBoosts: 5
-    TimeInSeconds: 120
-    _orders:
-    - {fileID: 11400000, guid: afb990107b2240341b0e1cf0d50d148e, type: 2}
-    - {fileID: 11400000, guid: 9194e045e65576c4d961962d26d8c186, type: 2}
-    - {fileID: 11400000, guid: 9194e045e65576c4d961962d26d8c186, type: 2}
-    - {fileID: 11400000, guid: 9194e045e65576c4d961962d26d8c186, type: 2}
-    - {fileID: 11400000, guid: 9194e045e65576c4d961962d26d8c186, type: 2}
-    - {fileID: 11400000, guid: 5786492e4077316449c80577170c1da1, type: 2}
-    - {fileID: 11400000, guid: 850b2cf2888daf14b8d93b5239fce881, type: 2}
-    - {fileID: 11400000, guid: 2f7f1a7787f85854686f4b494fc03e6c, type: 2}
-    OrderStrings:
-    - AD
-    - DD
-    - DD
-    - DD
-    - DD
-    - C
-    - CD
-    - A
-    TotalMealsNumber: 14
-    CustomersCount: 8
-    MaxMealsInOneOrder: 0
+    DisplayName: 666
+    Type: 0
+    NumberOfBoosts: 4
+    TimeInSeconds: 60
+    _orders: []
+    OrderStrings: []
+    TotalMealsNumber: 40
+    CustomersCount: 20
+    MaxMealsInOneOrder: 3
 --- !u!4 &588743296
 Transform:
   m_ObjectHideFlags: 0

@@ -68,6 +68,8 @@ namespace Restaurants
                 var presets = levelData.GenerateOrders(_settings.ServedFood);
                 foreach (var p in presets)
                     _orders.Enqueue(new CustomerOrder(p));
+                if (GameController.ShowDebugLogs)
+                    Debug.Log($"This level has {_orders.Count} orders");
             }
 
             List<CustomerSpot> CreateSpots()

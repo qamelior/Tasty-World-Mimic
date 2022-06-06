@@ -2,6 +2,7 @@ using System;
 using _Extensions;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zenject;
 
 namespace GUI
 {
@@ -19,9 +20,10 @@ namespace GUI
             remove => _onStart -= value;
         }
 
-        protected override void OnEnable()
+        [Inject]
+        public override void Construct()
         {
-            base.OnEnable(); 
+            base.Construct();
             _menuBackground = _root.FindVisualElement<VisualElement>(MenuRootID);
             _menuBackground.SetVisibility(true);
             _onStart += () => gameObject.SetActive(false);

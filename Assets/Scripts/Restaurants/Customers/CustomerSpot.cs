@@ -28,6 +28,7 @@ namespace Restaurants.Customers
             _customerSpawnLocation = customerSpawnLocation;
             _customersSpawnRoot.DestroyChildren();
             _orderGUI = GetComponent<GUI.CustomerOrderGUI>();
+            _orderGUI.Init();
             _orderGUI.HideAll();
             _onSpotVacated += onVacate;
         }

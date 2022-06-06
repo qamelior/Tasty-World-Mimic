@@ -111,7 +111,7 @@ namespace Game.Data.Levels
                 int numberOfMeals = MagicSelector(customersLeft, mealsLeft, MaxMealsInOneOrder);
                 presets.Add(foodCollection.SelectRandomPreset(numberOfMeals));
                 customersLeft--;
-                mealsLeft--;
+                mealsLeft -= numberOfMeals;
             }
 
             return presets.AsReadOnly();

@@ -2,17 +2,18 @@ using _Extensions;
 using Restaurants.Customers;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zenject;
 
 namespace GUI
 {
     public class CustomerOrderGUI : GUIWindow
     {
         private OrderMealUI[] _mealUI;
-
-        protected override void OnEnable()
+        
+        public void Init()
         {
-            base.OnEnable();
-
+            _ui = GetComponent<UIDocument>();
+            _root = _ui.rootVisualElement;
             _mealUI = new[]
             {
                 new OrderMealUI(_root, "First", "FirstLabel"),

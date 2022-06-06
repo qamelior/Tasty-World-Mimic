@@ -1,19 +1,20 @@
 using UnityEngine;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using Zenject;
 
 namespace GUI
 {
     public class GUIWindow : MonoBehaviour
     {
-        private UIDocument _ui;
+        protected UIDocument _ui;
         protected VisualElement _root;
 
-        protected virtual void OnEnable()
+        [Inject]
+        public virtual void Construct()
         {
             _ui = GetComponent<UIDocument>();
             _root = _ui.rootVisualElement;
         }
-
     }
 }
