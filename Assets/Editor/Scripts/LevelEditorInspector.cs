@@ -1,4 +1,5 @@
 using _Extensions;
+using Game.Data;
 using Game.Data.Levels;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -15,6 +16,7 @@ public class LevelEditorInspector : UIToolkitEditorBase
     private const string FakeFolderPathID = "LevelsFolderPath";
     private const string SelectedObjectFieldID = "SelectedFile";
     private const string SerializedLevelDataBlockID = "SelectedLevelInspector";
+    private const string MealCollectionSelectorID = "FoodCollectionSelector";
 
 
     public override VisualElement CreateInspectorGUI()
@@ -27,6 +29,9 @@ public class LevelEditorInspector : UIToolkitEditorBase
             ?.RegisterCallback<ClickEvent>(evt => _editor.CreateNewFile());
         _inspector.FindVisualElement<ObjectField>(SelectedObjectFieldID)
             ?.RegisterValueChangedCallback(evt => OnSelectedAssetChanged());
+
+        _inspector.FindVisualElement<ObjectField>(MealCollectionSelectorID)?.SetType(typeof(FoodCollection));
+        
         //save folder path
         _inspector.FindVisualElement<TextField>(FakeFolderPathID)?.SetText(_editor.FakePath);
         UpdateEditModeVisuals();

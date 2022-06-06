@@ -1,9 +1,9 @@
 using UnityEngine;
+using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 namespace GUI
 {
-    [RequireComponent(typeof(UnityEngine.UIElements.UIDocument))]
     public class GUIWindow : MonoBehaviour
     {
         private UIDocument _ui;

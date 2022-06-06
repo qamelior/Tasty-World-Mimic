@@ -1,5 +1,8 @@
+using System;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace _Extensions
 {
@@ -29,24 +32,21 @@ namespace _Extensions
             return elem;
         }
 
-        public static Vector2Int ChangeX(this Vector2Int v2, int change)
+        public static void ChangeX(this Vector2Int v2, int change)
         {
             v2.x += change;
-            return v2;
         }
 
-        public static Rect SetPosition(this Rect rect, float x, float y)
-        {
-            rect.Set(x, y, rect.width, rect.height);
-            return rect;
-        }
-
-        public static VisualElement SetWorldPosition(this VisualElement el, Vector3 worldPosition, Camera camera = null)
+        public static void SetWorldPosition(this VisualElement el, Vector3 worldPosition, Camera camera = null)
         {
             if (camera == null) camera = Camera.main;
             var rect = RuntimePanelUtils.CameraTransformWorldToPanelRect(el.panel, worldPosition, Vector2.one, camera);
             el.transform.position = rect.position;
-            return el;
+        }
+
+        public static void SetType(this ObjectField field, Type type)
+        {
+            field.objectType = type;
         }
     
         public static void DestroyChildren(this Transform root)

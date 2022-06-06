@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <uie:ObjectField label="Meals Collection Reference" name="MealsCollection" type="Game.Data.FoodCollection,Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null" binding-path="_foodCollection" />
+    <uie:ObjectField label="Food collection" name="FoodCollectionSelector" binding-path="_foodCollection" allow-scene-objects="false" />
     <ui:VisualElement name="NewFile" style="flex-grow: 0; flex-direction: row;">
         <ui:TextField picking-mode="Ignore" label="Levels data folder path" value="filler text" text="LevelData/" focusable="false" password="false" readonly="true" multiline="false" is-delayed="false" name="LevelsFolderPath" style="opacity: 0.5; flex-grow: 1;" />
         <ui:Button text="New file" display-tooltip-when-elided="true" name="CreateNewLevel" style="padding-left: 12px; padding-right: 12px; width: 65px;" />
