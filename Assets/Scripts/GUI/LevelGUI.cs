@@ -19,35 +19,45 @@ namespace GUI
         [SerializeField] private string _getBoostButtonID = "GetBoost";
         [SerializeField] private string _restartButtonID = "RestartButton";
         [SerializeField] private string _quitButtonID = "QuitButton";
+        
+        [SerializeField] private string _useBoostButtonID = "GetFixButton";
+        [SerializeField] private string _boostCounterID = "BoostsCounter";
 
         private Label _levelTimer;
         private Label _customersNumber;
         private VisualElement _menu;
         private Label _menuHeader;
+        private Label _boostsNumber;
 
-        private Action<MenuMode> _onMenuToggle;
-        private Action _onGetBoost;
-        private Action _onRestart;
-        private Action _onQuit;
-        public event  Action<MenuMode> OnMenuToggle
+        private Action<MenuMode> _onMenuModeSwitch;
+        private Action _onGetBoostClick;
+        private Action _onSpendBoostClick;
+        private Action _onRestartClick;
+        private Action _onQuitClick;
+        public event  Action<MenuMode> OnMenuModeSwitch
         {
-            add => _onMenuToggle += value;
-            remove => _onMenuToggle -= value;
+            add => _onMenuModeSwitch += value;
+            remove => _onMenuModeSwitch -= value;
         }
-        public event Action OnGetBoost
+        public event Action OnGetBoostClick
         {
-            add => _onGetBoost += value;
-            remove => _onGetBoost -= value;
+            add => _onGetBoostClick += value;
+            remove => _onGetBoostClick -= value;
         }
-        public event Action OnRestart
+        public event Action OnSpendBoostClick
         {
-            add => _onRestart += value;
-            remove => _onRestart -= value;
+            add => _onSpendBoostClick += value;
+            remove => _onSpendBoostClick -= value;
         }
-        public event Action OnQuit
+        public event Action OnRestartClick
         {
-            add => _onQuit += value;
-            remove => _onQuit -= value;
+            add => _onRestartClick += value;
+            remove => _onRestartClick -= value;
+        }
+        public event Action OnQuitClick
+        {
+            add => _onQuitClick += value;
+            remove => _onQuitClick -= value;
         }
         
         protected override void OnEnable()
@@ -59,12 +69,14 @@ namespace GUI
             _menu = _root.FindVisualElement<VisualElement>(_menuID);
             _menu.SetVisibility(false);
             _menuHeader = _root.FindVisualElement<Label>(_menuHeaderID);
-            _onRestart += () => ToggleMenu(MenuMode.Closed);
+            _onRestartClick += () => ToggleMenu(MenuMode.Closed);
             _root.FindVisualElement<Button>(_openMenuButtonID)?.RegisterCallback<ClickEvent>(evt => ToggleMenu(MenuMode.Paused));
             _root.FindVisualElement<Button>(_continueButtonID)?.RegisterCallback<ClickEvent>(evt => ToggleMenu(MenuMode.Closed));
-            _root.FindVisualElement<Button>(_getBoostButtonID)?.RegisterCallback<ClickEvent>(evt => _onGetBoost?.Invoke());
-            _root.FindVisualElement<Button>(_restartButtonID)?.RegisterCallback<ClickEvent>(evt => _onRestart?.Invoke());
-            _root.FindVisualElement<Button>(_quitButtonID)?.RegisterCallback<ClickEvent>(evt => _onQuit?.Invoke());
+            _root.FindVisualElement<Button>(_getBoostButtonID)?.RegisterCallback<ClickEvent>(evt => _onGetBoostClick?.Invoke());
+            _root.FindVisualElement<Button>(_restartButtonID)?.RegisterCallback<ClickEvent>(evt => _onRestartClick?.Invoke());
+            _root.FindVisualElement<Button>(_quitButtonID)?.RegisterCallback<ClickEvent>(evt => _onQuitClick?.Invoke());
+            _root.FindVisualElement<Button>(_useBoostButtonID)?.RegisterCallback<ClickEvent>(evt => _onSpendBoostClick?.Invoke());
+            _boostsNumber = _root.FindVisualElement<Label>(_boostCounterID);
         }
 
         public void UpdateLevelTimer(int timeLeftSeconds)
@@ -78,6 +90,11 @@ namespace GUI
             _customersNumber.text = $"{customersNumber.x}/{customersNumber.y}";
         }
 
+        public void UpdateNumberOfBoosts(int value)
+        {
+            _boostsNumber.text = $"{value}";
+        }
+        
         public void ToggleMenu(MenuMode mode)
         {
             switch (mode)
@@ -92,7 +109,7 @@ namespace GUI
                     _menuHeader.text = "Level failed!";
                     break;
             }
-            _onMenuToggle?.Invoke(mode);
+            _onMenuModeSwitch?.Invoke(mode);
             _menu.SetVisibility(mode != MenuMode.Closed);
         }
 

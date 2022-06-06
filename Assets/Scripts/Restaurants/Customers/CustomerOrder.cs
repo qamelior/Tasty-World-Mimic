@@ -45,5 +45,11 @@ namespace Restaurants.Customers
                 _onOrderFulfilled?.Invoke();
             return true;
         }
+
+        public void ForceComplete()
+        {
+            _mealsToDeliver.Clear();
+            _onOrderFulfilled?.Invoke();
+        }
     }
 }

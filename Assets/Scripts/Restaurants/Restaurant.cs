@@ -22,6 +22,14 @@ namespace Restaurants
         private readonly Settings _settings;
         private Transform _mealSourcesHolder;
         private Transform _customersHolder;
+
+        private Action _onOrderEnforced;
+        public event Action OnOrderEnforced
+        {
+            add => _onOrderEnforced += value;
+            remove => _onOrderEnforced -= value;
+        }
+        
         public Restaurant(Transform mealSourcesHolder, Transform customersHolder, CustomerSpot.Factory customerSpotFactory, MealSource.Factory mealSourceFactory, Settings settings)
         {
             _mealSourcesHolder = mealSourcesHolder;
@@ -49,6 +57,7 @@ namespace Restaurants
             var customerSpots = CreateSpots();
             SpawnCustomers(customerSpots);
             _onCustomerServed = onCustomerServed;
+            _onOrderEnforced = null;
 
             void CreateOrders()
             {
@@ -78,6 +87,15 @@ namespace Restaurants
                 foreach (var spot in spots)
                     TrySpawnNextCustomer(spot);
             }
+        }
+
+        public void TryCompleteOldestOrder()
+        {
+            if (_activeOrders == null || _activeOrders.Count < 1)
+                return;
+            var order = _activeOrders[0];
+            order.ForceComplete();
+            _onOrderEnforced?.Invoke();
         }
 
         private void MopTheFloor()

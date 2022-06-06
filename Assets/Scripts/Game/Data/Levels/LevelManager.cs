@@ -15,9 +15,11 @@ namespace Game.Data.Levels
     {
         private readonly LevelGUI _ui;
         private LevelData _levelData;
-        private readonly LevelTimer _timer;
+        private LevelTimer _timer;
         private ReactiveProperty<Vector2Int> _servedCustomers;
+        private ReactiveProperty<int> _boostsNumber;
         private readonly Settings _settings;
+        private Action _askToCompleteOrder;
         private Action _onLevelCompleted;
         private Action _onLevelFailed;
         public event Action OnLevelCompleted
@@ -34,21 +36,55 @@ namespace Game.Data.Levels
         public LevelManager(LevelGUI levelGUI, Settings settings)
         {
             _settings = settings;
-            _servedCustomers = new ReactiveProperty<Vector2Int>();
             _ui = levelGUI;
-            _timer = new LevelTimer(_ui.UpdateLevelTimer, _onLevelFailed);
-            _servedCustomers.Subscribe(_ui.UpdateCustomersNumber);
+            InitCustomersCounter();
+            InitTimer();
+            InitBoosts();
+
+            void InitCustomersCounter()
+            {
+                _servedCustomers = new ReactiveProperty<Vector2Int>();
+                _servedCustomers.Subscribe(_ui.UpdateCustomersNumber);
+            }
+            void InitTimer()
+            {
+                _timer = new LevelTimer();
+                _timer.TimerValue.Subscribe(_ui.UpdateLevelTimer);
+                _timer.TimeOutEvent += OnTimeOut;
+            }
+            void InitBoosts()
+            {
+                _boostsNumber = new ReactiveProperty<int>();
+                _boostsNumber.Subscribe(_ui.UpdateNumberOfBoosts);
+                _ui.OnGetBoostClick += GetBoost;
+                _ui.OnSpendBoostClick += OnBoostClicked;
+            }
         }
 
         public void StartLevel(Restaurant restaurant)
         {
             LevelEditor.GetLevelDataFromJSON(_settings.LevelFile, ref _levelData, _settings.Food);
+            _boostsNumber.Value = _levelData.NumberOfBoosts;
             _timer.Start(_levelData.TimeInSeconds);
             _servedCustomers.Value = new Vector2Int(0, _levelData.CustomersCount);
+            
             restaurant.StartLevel(_levelData, OnCustomerServed);
+            restaurant.OnOrderEnforced += SpendBoost;
+            _askToCompleteOrder = restaurant.TryCompleteOldestOrder;
+
         }
 
+        private void GetBoost() { _boostsNumber.Value += 1; }
+        private void SpendBoost()
+        {
+            if (_boostsNumber.Value <= 0) return;
+            _boostsNumber.Value -= 1;
+        }
+
+        private void OnBoostClicked() { _askToCompleteOrder?.Invoke(); }
+
         public void OnTimePassed(float deltaTime) => _timer.Update(deltaTime);
+        private void OnTimeOut() { _onLevelFailed?.Invoke(); }
 
         private void OnCustomerServed()
         {
@@ -68,21 +104,22 @@ namespace Game.Data.Levels
 
         private class LevelTimer
         {
-            private readonly ReactiveProperty<int> _levelTimer;
+            private readonly ReactiveProperty<int> _timerValue;
             private float _timePassedSinceLastUpdate;
-            private readonly Action _timeOutEvent;
-            
-            public LevelTimer(Action<int> timeChangedEvent, Action timeOutEvent)
+            private Action _timeOutEvent;
+            public ReactiveProperty<int> TimerValue => _timerValue;
+            public event Action TimeOutEvent
             {
-                _levelTimer = new ReactiveProperty<int>();
-                _levelTimer.Subscribe(timeChangedEvent);
-                _timeOutEvent = timeOutEvent;
+                add => _timeOutEvent += value;
+                remove => _timeOutEvent -= value;
             }
-            
+
+            public LevelTimer() { _timerValue = new ReactiveProperty<int>(); }
+
             public void Start(int timeInSeconds)
             {
                 _timePassedSinceLastUpdate = 0f;
-                _levelTimer.Value = timeInSeconds;
+                _timerValue.Value = timeInSeconds;
             }
             
             public void Update(float deltaTime)
@@ -91,8 +128,8 @@ namespace Game.Data.Levels
                 while (_timePassedSinceLastUpdate >= 1f)
                 {
                     _timePassedSinceLastUpdate -= 1f;
-                    _levelTimer.Value -= 1;
-                    if (_levelTimer.Value <= 0)
+                    _timerValue.Value -= 1;
+                    if (_timerValue.Value <= 0)
                     {
                         _timeOutEvent?.Invoke();
                         break;

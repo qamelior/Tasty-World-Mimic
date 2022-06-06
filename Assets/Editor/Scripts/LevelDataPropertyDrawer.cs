@@ -25,6 +25,7 @@ public class LevelDataPropertyDrawer : PropertyDrawer
         //container.style.backgroundColor = new StyleColor(new Color(0.56f, 0.56f, 0.56f, 0.35f));
         //container.Add(new Label($""));
         //container.Add(new PropertyField(property.FindPropertyRelative("_displayName")));
+        container.Add(new PropertyField(property.FindPropertyRelative("NumberOfBoosts")));
         container.Add(new PropertyField(property.FindPropertyRelative("TimeInSeconds")));
         
         //type

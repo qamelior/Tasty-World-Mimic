@@ -571,6 +571,7 @@ MonoBehaviour:
   _levelData:
     DisplayName: 
     Type: 1
+    NumberOfBoosts: 5
     TimeInSeconds: 120
     _orders:
     - {fileID: 11400000, guid: afb990107b2240341b0e1cf0d50d148e, type: 2}
@@ -581,7 +582,15 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 5786492e4077316449c80577170c1da1, type: 2}
     - {fileID: 11400000, guid: 850b2cf2888daf14b8d93b5239fce881, type: 2}
     - {fileID: 11400000, guid: 2f7f1a7787f85854686f4b494fc03e6c, type: 2}
-    OrderStrings: []
+    OrderStrings:
+    - AD
+    - DD
+    - DD
+    - DD
+    - DD
+    - C
+    - CD
+    - A
     TotalMealsNumber: 14
     CustomersCount: 8
     MaxMealsInOneOrder: 0
@@ -646,7 +655,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: b6d5a2bcb0d904d4c8cd6e7e518260f5, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 2ff448756eac06c488d7c9f7250eaee0, type: 3}
-  m_SortingOrder: 1
+  m_SortingOrder: 0
 --- !u!114 &670421626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -715,7 +724,7 @@ MonoBehaviour:
   m_PanelSettings: {fileID: 11400000, guid: b6d5a2bcb0d904d4c8cd6e7e518260f5, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 4f9bf2b346b162549bdaebcd99d0f3e3, type: 3}
-  m_SortingOrder: 0
+  m_SortingOrder: 1
 --- !u!114 &790584187
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,6 +12,7 @@ namespace Game.Data.Levels
     {
         public string DisplayName;
         public LevelType Type;
+        public int NumberOfBoosts;
         public int TimeInSeconds;
         [SerializeField] private List<CustomerOrderPreset> _orders;
         public List<string> OrderStrings;
