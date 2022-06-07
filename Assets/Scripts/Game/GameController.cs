@@ -1,78 +1,74 @@
 using System;
+using Game.Data.Levels;
 using GUI;
 using Restaurants;
+using UnityEditor;
 using UnityEngine;
 using Zenject;
 
-namespace Game
+namespace Game;
+
+public class GameController : ITickable
 {
-    public class GameController : ITickable
+    public const bool ShowDebugLogs = true;
+    private readonly Action<float> _gamePlayLoop;
+    private readonly LevelManager _levelManager;
+    private readonly Restaurant _restaurant;
+    private GameStates _currentGameState;
+
+    public GameController(MainMenuGUI menuUI, LevelGUI levelGUI, Restaurant restaurant, LevelManager levelManager)
     {
-        public static bool ShowDebugLogs = true;
-        private GameStates _currentGameState;
-        private readonly Data.Levels.LevelManager _levelManager;
-        private readonly Action<float> _gamePlayLoop;
-        private readonly Restaurant _restaurant;
-        public bool GameIsPaused => _currentGameState != GameStates.Playing;
-        public GameController(MainMenuGUI menuUI, LevelGUI levelGUI, Restaurant restaurant, Data.Levels.LevelManager levelManager)
-        {
-            _restaurant = restaurant;
-            _levelManager = levelManager;
-            _currentGameState = GameStates.MainMenu;
-            _gamePlayLoop += levelManager.OnTimePassed;
-            _levelManager.OnLevelCompleted += () => levelGUI.ToggleMenu(LevelGUI.MenuMode.LevelCompleted);
-            _levelManager.OnLevelFailed += () => levelGUI.ToggleMenu(LevelGUI.MenuMode.LevelFailed);
-            menuUI.OnStart += StartLevel;
-            
-            levelGUI.OnRestartClick += RestartLevel;
-            levelGUI.OnQuitClick += Quit;
-            levelGUI.OnMenuModeSwitch += (mode) =>
-                ChangeGameState(mode == LevelGUI.MenuMode.Closed ? GameStates.Playing : GameStates.Menu);
-        }
+        _currentGameState = GameStates.MainMenu;
+        _restaurant = restaurant;
+        _levelManager = levelManager;
+        _levelManager.OnLevelCompleted += () => levelGUI.ToggleMenu(LevelGUI.MenuMode.LevelCompleted);
+        _levelManager.OnLevelFailed += () => levelGUI.ToggleMenu(LevelGUI.MenuMode.LevelFailed);
+        _gamePlayLoop += levelManager.OnTimePassed;
+        menuUI.OnStart += StartLevel;
 
-        public void Tick()
-        {
-            if (_currentGameState == GameStates.Playing)
-                _gamePlayLoop.Invoke(Time.deltaTime);
-        }
+        levelGUI.OnRestartClick += RestartLevel;
+        levelGUI.OnQuitClick += Quit;
+        levelGUI.OnMenuModeSwitch += mode =>
+            ChangeGameState(mode == LevelGUI.MenuMode.Closed ? GameStates.Playing : GameStates.Menu);
+    }
 
-        private void StartLevel()
-        {
-            ChangeGameState(GameStates.Playing);
-            _levelManager.StartLevel(_restaurant);
-        }
+    public bool GameIsPaused => _currentGameState != GameStates.Playing;
 
-        private void RestartLevel()
-        {
-            // if (_currentGameState != GameStates.LevelFailed)
-            //     return;
-            // ChangeGameState(GameStates.Playing);
-            // _levelManager.RestartLevel();
-            StartLevel();
-        }
+    public void Tick()
+    {
+        if (_currentGameState == GameStates.Playing)
+            _gamePlayLoop.Invoke(Time.deltaTime);
+    }
 
-        private void Quit()
-        {
-            #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-            #else
+    private void StartLevel()
+    {
+        ChangeGameState(GameStates.Playing);
+        _levelManager.StartLevel(_restaurant);
+    }
+
+    private void RestartLevel() { StartLevel(); }
+
+    private void Quit()
+    {
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+#else
             Application.Quit();
-            #endif
-        }
+#endif
+    }
 
-        private void ChangeGameState(GameStates newState)
-        {
-            if (ShowDebugLogs)
-                Debug.Log($"Game state: {newState}");
-            _currentGameState = newState;
-        }
+    private void ChangeGameState(GameStates newState)
+    {
+        if (ShowDebugLogs)
+            Debug.Log($"Game state: {newState}");
+        _currentGameState = newState;
+    }
 
-        private enum GameStates
-        {
-            MainMenu,
-            Playing,
-            Menu,
-            Count,
-        }
+    private enum GameStates
+    {
+        MainMenu,
+        Playing,
+        Menu,
+        Count
     }
 }

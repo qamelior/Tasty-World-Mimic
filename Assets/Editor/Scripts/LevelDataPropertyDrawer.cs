@@ -21,21 +21,18 @@ public class LevelDataPropertyDrawer : PropertyDrawer
                 marginTop = 10f
             }
         };
-
-        //container.style.backgroundColor = new StyleColor(new Color(0.56f, 0.56f, 0.56f, 0.35f));
-        //container.Add(new Label($""));
-        //container.Add(new PropertyField(property.FindPropertyRelative("_displayName")));
+        
         container.Add(new PropertyField(property.FindPropertyRelative("NumberOfBoosts")));
         container.Add(new PropertyField(property.FindPropertyRelative("TimeInSeconds")));
         
-        //type
         var typeEnum = property.FindPropertyRelative("Type");
         var typeField = new PropertyField(typeEnum);
-        typeField.RegisterValueChangeCallback(OnTypeChanged);
+        typeField.RegisterValueChangeCallback(evt => ShowContextFields(evt.changedProperty.enumValueIndex));
         container.Add(typeField);
 
         _randomLevelGroup = CreateRandomGroup(property);
         container.Add(_randomLevelGroup);
+        
         _fixedLevelGroup = CreateFixedGroup(property);
         container.Add(_fixedLevelGroup);
 
@@ -62,14 +59,9 @@ public class LevelDataPropertyDrawer : PropertyDrawer
 
     private void ShowContextFields(int enumValueIndex)
     {
-        var isFixed = enumValueIndex == (int)LevelData.LevelType.Fixed;
+        bool isFixed = enumValueIndex == (int)LevelData.LevelType.Fixed;
         _fixedLevelGroup.SetVisibility(isFixed);
         _randomLevelGroup.SetVisibility(!isFixed);
-    }
-
-    private void OnTypeChanged(SerializedPropertyChangeEvent evt)
-    {
-        ShowContextFields(evt.changedProperty.enumValueIndex);
     }
 }
 #endif

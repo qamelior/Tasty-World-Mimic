@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83edbd52c03fc4d319804b472b97f952, type: 3}
-  m_Name: OverlayText Settings
+  m_Name: TWMTextSettings
   m_EditorClassIdentifier: 
   m_Version: 
   m_DefaultFontAsset: {fileID: 11400000, guid: ba9864a5ebf4dd04b9bf6c84fb797f80, type: 2}

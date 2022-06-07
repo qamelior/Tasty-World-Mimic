@@ -1,20 +1,13 @@
 using Game.Data.Levels;
 using Zenject;
 
-namespace Game
+namespace Game;
+
+public class GameInstaller : MonoInstaller
 {
-    public class GameInstaller : MonoInstaller
+    public override void InstallBindings()
     {
-        public override void InstallBindings()
-        {
-            Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
-            Container.Bind<LevelManager>().AsSingle();
-            // ExecutionOrder();
-            // void ExecutionOrder()
-            // {
-            //     Container.BindExecutionOrder<GameController>(-10);
-            //     //Container.BindExecutionOrder<LevelManager>(-10);
-            // }
-        }
+        Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
+        Container.Bind<LevelManager>().AsSingle();
     }
 }

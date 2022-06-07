@@ -21,20 +21,18 @@ public class LevelEditorInspector : UIToolkitEditorBase
     public override VisualElement CreateInspectorGUI()
     {
         base.CreateInspectorGUI();
+        
         _editor = (LevelEditor)target;
         _editor.ValidateEditMode();
-        //create new file
-        _inspector.FindVisualElement<Button>(NewFileButtonID)
-            ?.RegisterCallback<ClickEvent>(evt => _editor.CreateNewFile());
+
+        _inspector.FindVisualElement<Button>(NewFileButtonID)?.RegisterCallback<ClickEvent>(evt => _editor.CreateNewFile());
         _inspector.FindVisualElement<ObjectField>(SelectedObjectFieldID)
             ?.RegisterValueChangedCallback(evt => OnSelectedAssetChanged());
-
         _inspector.FindVisualElement<ObjectField>(MealCollectionSelectorID)?.SetType(typeof(FoodCollection));
-        
-        //save folder path
         _inspector.FindVisualElement<TextField>(FakeFolderPathID)?.SetText(_editor.FakePath);
+        
         UpdateEditModeVisuals();
-
+        
         return _inspector;
     }
 
