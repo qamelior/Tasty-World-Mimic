@@ -6,69 +6,70 @@ using UnityEditor;
 using UnityEngine;
 using Zenject;
 
-namespace Game;
-
-public class GameController : ITickable
+namespace Game
 {
-    public const bool ShowDebugLogs = true;
-    private readonly Action<float> _gamePlayLoop;
-    private readonly LevelManager _levelManager;
-    private readonly Restaurant _restaurant;
-    private GameStates _currentGameState;
-
-    public GameController(MainMenuGUI menuUI, LevelGUI levelGUI, Restaurant restaurant, LevelManager levelManager)
+    public class GameController : ITickable
     {
-        _currentGameState = GameStates.MainMenu;
-        _restaurant = restaurant;
-        _levelManager = levelManager;
-        _levelManager.OnLevelCompleted += () => levelGUI.ToggleMenu(LevelGUI.MenuMode.LevelCompleted);
-        _levelManager.OnLevelFailed += () => levelGUI.ToggleMenu(LevelGUI.MenuMode.LevelFailed);
-        _gamePlayLoop += levelManager.OnTimePassed;
-        menuUI.OnStart += StartLevel;
+        public const bool ShowDebugLogs = true;
+        private readonly Action<float> _gamePlayLoop;
+        private readonly LevelManager _levelManager;
+        private readonly Restaurant _restaurant;
+        private GameStates _currentGameState;
 
-        levelGUI.OnRestartClick += RestartLevel;
-        levelGUI.OnQuitClick += Quit;
-        levelGUI.OnMenuModeSwitch += mode =>
-            ChangeGameState(mode == LevelGUI.MenuMode.Closed ? GameStates.Playing : GameStates.Menu);
-    }
+        public GameController(MainMenuGUI menuUI, LevelGUI levelGUI, Restaurant restaurant, LevelManager levelManager)
+        {
+            _currentGameState = GameStates.MainMenu;
+            _restaurant = restaurant;
+            _levelManager = levelManager;
+            _levelManager.OnLevelCompleted += () => levelGUI.ToggleMenu(LevelGUI.MenuMode.LevelCompleted);
+            _levelManager.OnLevelFailed += () => levelGUI.ToggleMenu(LevelGUI.MenuMode.LevelFailed);
+            _gamePlayLoop += levelManager.OnTimePassed;
+            menuUI.OnStart += StartLevel;
 
-    public bool GameIsPaused => _currentGameState != GameStates.Playing;
+            levelGUI.OnRestartClick += RestartLevel;
+            levelGUI.OnQuitClick += Quit;
+            levelGUI.OnMenuModeSwitch += mode =>
+                ChangeGameState(mode == LevelGUI.MenuMode.Closed ? GameStates.Playing : GameStates.Menu);
+        }
 
-    public void Tick()
-    {
-        if (_currentGameState == GameStates.Playing)
-            _gamePlayLoop.Invoke(Time.deltaTime);
-    }
+        public bool GameIsPaused => _currentGameState != GameStates.Playing;
 
-    private void StartLevel()
-    {
-        ChangeGameState(GameStates.Playing);
-        _levelManager.StartLevel(_restaurant);
-    }
+        public void Tick()
+        {
+            if (_currentGameState == GameStates.Playing)
+                _gamePlayLoop.Invoke(Time.deltaTime);
+        }
 
-    private void RestartLevel() { StartLevel(); }
+        private void StartLevel()
+        {
+            ChangeGameState(GameStates.Playing);
+            _levelManager.StartLevel(_restaurant);
+        }
 
-    private void Quit()
-    {
+        private void RestartLevel() { StartLevel(); }
+
+        private void Quit()
+        {
 #if UNITY_EDITOR
-        EditorApplication.isPlaying = false;
+            EditorApplication.isPlaying = false;
 #else
             Application.Quit();
 #endif
-    }
+        }
 
-    private void ChangeGameState(GameStates newState)
-    {
-        if (ShowDebugLogs)
-            Debug.Log($"Game state: {newState}");
-        _currentGameState = newState;
-    }
+        private void ChangeGameState(GameStates newState)
+        {
+            if (ShowDebugLogs)
+                Debug.Log($"Game state: {newState}");
+            _currentGameState = newState;
+        }
 
-    private enum GameStates
-    {
-        MainMenu,
-        Playing,
-        Menu,
-        Count
+        private enum GameStates
+        {
+            MainMenu,
+            Playing,
+            Menu,
+            Count
+        }
     }
 }

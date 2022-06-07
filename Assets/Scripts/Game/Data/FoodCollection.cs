@@ -5,45 +5,46 @@ using UnityEngine;
 // ReSharper disable LoopCanBeConvertedToQuery
 //LINQ is expensive
 
-namespace Game.Data;
-
-[CreateAssetMenu(menuName = "Food/Collection")]
-public class FoodCollection : ScriptableObject
+namespace Game.Data
 {
-    public List<MealPreset> Meals;
-
-    [SerializeField] private CustomerOrderPreset[] _orderPresets;
-    public CustomerOrderPreset[] OrderPresets => _orderPresets;
-
-    //TODO call this func
-    public void ValidateCollection()
+    [CreateAssetMenu(menuName = "Food/Collection")]
+    public class FoodCollection : ScriptableObject
     {
-        for (var i = 0; i < Meals.Count; i++)
-        for (int j = i + 1; j < Meals.Count; j++)
-            if (Meals[i].UID == Meals[j].UID)
-                Debug.LogError($"[FoodCollection] Same UID ({Meals[i].UID}) used for different meals");
-    }
+        public List<MealPreset> Meals;
 
-    public bool IsValidID(string id)
-    {
-        var preset = GetPreset(id);
-        return preset != null;
-    }
+        [SerializeField] private CustomerOrderPreset[] _orderPresets;
+        public CustomerOrderPreset[] OrderPresets => _orderPresets;
 
-    public CustomerOrderPreset GetPreset(string id)
-    {
-        foreach (var preset in _orderPresets)
-            if (preset.UID == id)
-                return preset;
-        return null;
-    }
+        //TODO call this func
+        public void ValidateCollection()
+        {
+            for (var i = 0; i < Meals.Count; i++)
+            for (int j = i + 1; j < Meals.Count; j++)
+                if (Meals[i].UID == Meals[j].UID)
+                    Debug.LogError($"[FoodCollection] Same UID ({Meals[i].UID}) used for different meals");
+        }
 
-    public CustomerOrderPreset SelectRandomPreset(int mealsNumber)
-    {
-        var selection = new List<CustomerOrderPreset>();
-        foreach (var preset in _orderPresets)
-            if (preset.Meals.Length == mealsNumber)
-                selection.Add(preset);
-        return selection[Random.Range(0, selection.Count - 1)];
+        public bool IsValidID(string id)
+        {
+            var preset = GetPreset(id);
+            return preset != null;
+        }
+
+        public CustomerOrderPreset GetPreset(string id)
+        {
+            foreach (var preset in _orderPresets)
+                if (preset.UID == id)
+                    return preset;
+            return null;
+        }
+
+        public CustomerOrderPreset SelectRandomPreset(int mealsNumber)
+        {
+            var selection = new List<CustomerOrderPreset>();
+            foreach (var preset in _orderPresets)
+                if (preset.Meals.Length == mealsNumber)
+                    selection.Add(preset);
+            return selection[Random.Range(0, selection.Count - 1)];
+        }
     }
 }
