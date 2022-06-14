@@ -65,16 +65,18 @@ namespace GUI
             _customersNumber = _root.FindVisualElement<Label>(_customersNumberID);
             _menuHeader = _root.FindVisualElement<Label>(_menuHeaderID);
             _boostsNumber = _root.FindVisualElement<Label>(_boostCounterID);
-            (_menu = _root.FindVisualElement<VisualElement>(_menuID)).Hide();
+            _menu = _root.FindVisualElement<VisualElement>(_menuID);
+            _menu.Hide();
 
-            _root.FindVisualElement<Button>(_openMenuButtonID)?.RegisterCallback<ClickEvent>(evt => ToggleMenu(MenuMode.Paused));
-            (_continueButton = _root.FindVisualElement<Button>(_continueButtonID))?.RegisterCallback<ClickEvent>(evt =>
-                ToggleMenu(MenuMode.Closed));
-            (_getBoostButton = _root.FindVisualElement<Button>(_getBoostButtonID))?.RegisterCallback<ClickEvent>(evt =>
-                _onGetBoostClick?.Invoke());
-            _root.FindVisualElement<Button>(_restartButtonID)?.RegisterCallback<ClickEvent>(evt => _onRestartClick?.Invoke());
-            _root.FindVisualElement<Button>(_quitButtonID)?.RegisterCallback<ClickEvent>(evt => _onQuitClick?.Invoke());
-            _root.FindVisualElement<Button>(_useBoostButtonID)?.RegisterCallback<ClickEvent>(evt => _onSpendBoostClick?.Invoke());
+            _root.RegisterButtonEvent(_openMenuButtonID,evt =>ToggleMenu(MenuMode.Paused));
+            //menu buttons
+            _continueButton = _root.FindVisualElement<Button>(_continueButtonID);
+            _continueButton?.RegisterCallback<ClickEvent>(evt => ToggleMenu(MenuMode.Closed));
+            _getBoostButton = _root.FindVisualElement<Button>(_getBoostButtonID);
+            _getBoostButton?.RegisterCallback<ClickEvent>(evt => _onGetBoostClick?.Invoke());
+            _root.RegisterButtonEvent(_restartButtonID, evt => _onRestartClick?.Invoke());
+            _root.RegisterButtonEvent(_quitButtonID, evt => _onQuitClick?.Invoke());
+            _root.RegisterButtonEvent(_useBoostButtonID, evt => _onSpendBoostClick?.Invoke());
         }
 
         public void UpdateLevelTimer(int timeLeftSeconds)

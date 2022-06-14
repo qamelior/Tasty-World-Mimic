@@ -21,7 +21,7 @@ namespace GUI
             _menuBackground = _root.FindVisualElement<VisualElement>(MenuRootID);
             _menuBackground.Show();
             _onStart += () => gameObject.SetActive(false);
-            _root.FindVisualElement<Button>(StartLevelButtonID)?.RegisterCallback<ClickEvent>(evt => _onStart?.Invoke());
+            _root.RegisterButtonEvent(StartLevelButtonID, evt => _onStart?.Invoke());
         }
     }
 }

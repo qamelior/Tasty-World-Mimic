@@ -25,7 +25,6 @@ namespace Game
             _levelManager.OnLevelFailed += () => levelGUI.ToggleMenu(LevelGUI.MenuMode.LevelFailed);
             _gamePlayLoop += levelManager.OnTimePassed;
             menuUI.OnStart += StartLevel;
-
             levelGUI.OnRestartClick += RestartLevel;
             levelGUI.OnQuitClick += Quit;
             levelGUI.OnMenuModeSwitch += mode =>

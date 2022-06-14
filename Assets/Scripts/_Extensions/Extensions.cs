@@ -8,7 +8,7 @@ namespace _Extensions
 {
     public static class UIToolkitExtensions
     {
-        public static bool IsVisible(this VisualElement el) { return el.style.display == DisplayStyle.Flex; }
+        public static bool IsVisible(this VisualElement el) { return el.style.display.value == DisplayStyle.Flex; }
         public static void SetVisibility(this VisualElement el, bool mode)
         {
             if (el.IsVisible() == mode)
@@ -17,7 +17,7 @@ namespace _Extensions
         }
 
         public static void Show(this VisualElement el) { el.SetVisibility(true); }
-        public static void Hide(this VisualElement el) { el.SetVisibility(true); }
+        public static void Hide(this VisualElement el) { el.SetVisibility(false); }
         
         public static T FindVisualElement<T>(this VisualElement root, string elementName) where T : VisualElement
         {
@@ -34,6 +34,11 @@ namespace _Extensions
             if (camera == null) camera = Camera.main;
             var rect = RuntimePanelUtils.CameraTransformWorldToPanelRect(el.panel, worldPosition, Vector2.one, camera);
             el.transform.position = rect.position;
+        }
+
+        public static void RegisterButtonEvent(this VisualElement el, string buttonID, EventCallback<ClickEvent> buttonEvent)
+        {
+            el.FindVisualElement<Button>(buttonID)?.RegisterCallback(buttonEvent);
         }
     }
 

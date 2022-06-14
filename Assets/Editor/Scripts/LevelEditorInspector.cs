@@ -25,7 +25,7 @@ public class LevelEditorInspector : UIToolkitEditorBase
         _editor = (LevelEditor)target;
         _editor.ValidateEditMode();
 
-        _inspector.FindVisualElement<Button>(NewFileButtonID)?.RegisterCallback<ClickEvent>(evt => _editor.CreateNewFile());
+        _inspector.RegisterButtonEvent(NewFileButtonID, evt => _editor.CreateNewFile());
         _inspector.FindVisualElement<ObjectField>(SelectedObjectFieldID)
             ?.RegisterValueChangedCallback(evt => OnSelectedAssetChanged());
         _inspector.FindVisualElement<ObjectField>(MealCollectionSelectorID)?.SetType(typeof(FoodCollection));
