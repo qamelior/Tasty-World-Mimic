@@ -21,8 +21,8 @@ namespace Game
             _currentGameState = GameStates.MainMenu;
             _restaurant = restaurant;
             _levelManager = levelManager;
-            _levelManager.OnLevelCompleted += () => levelGUI.ToggleMenu(LevelGUI.MenuMode.LevelCompleted);
-            _levelManager.OnLevelFailed += () => levelGUI.ToggleMenu(LevelGUI.MenuMode.LevelFailed);
+            _levelManager.OnLevelCompleted += () => levelGUI.OpenMenu(LevelGUI.MenuMode.LevelCompleted);
+            _levelManager.OnLevelFailed += () => levelGUI.OpenMenu(LevelGUI.MenuMode.LevelFailed);
             _gamePlayLoop += levelManager.OnTimePassed;
             menuUI.OnStart += StartLevel;
             levelGUI.OnRestartClick += RestartLevel;
