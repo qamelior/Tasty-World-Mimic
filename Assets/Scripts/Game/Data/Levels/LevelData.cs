@@ -15,8 +15,7 @@ namespace Game.Data.Levels
             Random,
             Fixed
         }
-
-        public string DisplayName;
+        
         public LevelType Type;
         public int NumberOfBoosts;
         public int TimeInSeconds;
@@ -25,9 +24,6 @@ namespace Game.Data.Levels
         public int CustomersCount;
         public List<string> OrderStrings;
         [SerializeField] private List<CustomerOrderPreset> _orders;
-
-        public LevelData(string name) { DisplayName = name; }
-
 
         public void Validate()
         {

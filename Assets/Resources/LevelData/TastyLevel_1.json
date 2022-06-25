@@ -1,1 +1,19 @@
-{"DisplayName":"","Type":1,"NumberOfBoosts":5,"TimeInSeconds":120,"OrderStrings":["AD","DD","DD","DD","DD","C","CD","A"],"TotalMealsNumber":14,"CustomersCount":8,"MaxMealsInOneOrder":0}
+{
+  "DisplayName": "",
+  "Type": 1,
+  "NumberOfBoosts": 5,
+  "TimeInSeconds": 120,
+  "OrderStrings": [
+    "AD",
+    "DD",
+    "DD",
+    "DD",
+    "DD",
+    "C",
+    "CD",
+    "A"
+  ],
+  "TotalMealsNumber": 14,
+  "CustomersCount": 8,
+  "MaxMealsInOneOrder": 0
+}

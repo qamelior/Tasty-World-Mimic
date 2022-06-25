@@ -1,8 +1,9 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <Style src="/Assets/GUI/USS/MainMenuUSS.uss" />
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="True">
+    <Style src="/Assets/GUI/USS/MainMenuUSS.uss"/>
     <ui:VisualElement name="Root" style="width: 100%; height: 100%; flex-grow: 0; align-items: center; justify-content: center;">
-        <ui:VisualElement name="MainMenu" class="menu-background" style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-image: url(&apos;/Assets/Sprites/menu background.jpg&apos;);">
-            <ui:Button text="Start Level" display-tooltip-when-elided="true" name="StartLevelButton" class="button start-button" />
+        <ui:VisualElement name="MainMenu" class="menu-background"
+                          style="position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background-image: url(&apos;/Assets/Sprites/menu background.jpg&apos;);">
+            <ui:Button text="Start Level" display-tooltip-when-elided="true" name="StartLevelButton" class="button start-button"/>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

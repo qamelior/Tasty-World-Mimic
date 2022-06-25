@@ -1,7 +1,6 @@
 using System;
 using Game.Data.Levels;
 using GUI;
-using Restaurants;
 using UnityEditor;
 using UnityEngine;
 using Zenject;
@@ -11,21 +10,15 @@ namespace Game
     public class GameController : ITickable
     {
         public const bool ShowDebugLogs = true;
-        private readonly Action<float> _gamePlayLoop;
-        private readonly LevelManager _levelManager;
-        private readonly Restaurant _restaurant;
         private GameStates _currentGameState;
+        private Action<float> _onTimePassed;
 
-        public GameController(MainMenuGUI menuUI, LevelGUI levelGUI, Restaurant restaurant, LevelManager levelManager)
+        public GameController(MainMenuGUI menuUI, LevelGUI levelGUI)
         {
             _currentGameState = GameStates.MainMenu;
-            _restaurant = restaurant;
-            _levelManager = levelManager;
-            _levelManager.OnLevelCompleted += () => levelGUI.OpenMenu(LevelGUI.MenuMode.LevelCompleted);
-            _levelManager.OnLevelFailed += () => levelGUI.OpenMenu(LevelGUI.MenuMode.LevelFailed);
-            _gamePlayLoop += levelManager.OnTimePassed;
-            menuUI.OnStart += StartLevel;
-            levelGUI.OnRestartClick += RestartLevel;
+
+            menuUI.OnStart += () => ChangeGameState(GameStates.Playing);
+            levelGUI.OnRestartClick += () => ChangeGameState(GameStates.Playing);
             levelGUI.OnQuitClick += Quit;
             levelGUI.OnMenuModeSwitch += mode =>
                 ChangeGameState(mode == LevelGUI.MenuMode.Closed ? GameStates.Playing : GameStates.Menu);
@@ -36,16 +29,11 @@ namespace Game
         public void Tick()
         {
             if (_currentGameState == GameStates.Playing)
-                _gamePlayLoop.Invoke(Time.deltaTime);
+                _onTimePassed?.Invoke(Time.deltaTime);
         }
 
-        private void StartLevel()
-        {
-            ChangeGameState(GameStates.Playing);
-            _levelManager.StartLevel(_restaurant);
-        }
+        public event Action<float> OnTimePassed { add => _onTimePassed += value; remove => _onTimePassed -= value; }
 
-        private void RestartLevel() { StartLevel(); }
 
         private void Quit()
         {

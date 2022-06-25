@@ -12,9 +12,6 @@ namespace GUI
         {
             Container.Bind<LevelGUI>().FromInstance(_levelGUI);
             Container.Bind<MainMenuGUI>().FromInstance(_mainMenuGUI);
-            
-            _mainMenuGUI.gameObject.SetActive(true);
-            _levelGUI.gameObject.SetActive(true);
         }
     }
 }

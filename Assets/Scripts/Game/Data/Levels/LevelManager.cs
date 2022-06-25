@@ -4,84 +4,74 @@ using GUI;
 using Restaurants;
 using UniRx;
 using UnityEngine;
+using Zenject;
 
 // ReSharper disable ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
 // No LINQ, thank you
 
 namespace Game.Data.Levels
 {
-    public class LevelManager
+    public class LevelManager : IInitializable
     {
+        private readonly Booster _booster;
+        private readonly CustomerCounter _customerCounter;
+        private readonly Action _onLevelOver;
         private readonly Settings _settings;
-        private ReactiveProperty<int> _boostsNumber;
-        private LevelData _levelData;
-        private Action _onBoostClicked;
-        private Action _onLevelCompleted;
-        private Action _onLevelFailed;
-        private ReactiveProperty<Vector2Int> _servedCustomers;
-        private LevelTimer _timer;
+        private readonly Timer _timer;
+        private readonly Action _onLevelCompleted;
+        private readonly Action _onLevelFailed;
+        private readonly Action<LevelData> _onLevelStarted;
 
-        public LevelManager(LevelGUI levelGUI, Settings settings)
+        public LevelManager(GameController gameController, MainMenuGUI menuGUI, LevelGUI levelGUI, Restaurant restaurant, Settings settings)
         {
             _settings = settings;
-            InitCustomersCounter();
-            InitTimer();
-            InitBoosts();
-
-            void InitCustomersCounter()
+            _customerCounter = new CustomerCounter(levelGUI.UpdateCustomersNumber, CompleteLevel);
+            _timer = new Timer(gameController, levelGUI.UpdateLevelTimer, FailLevel);
+            _booster = new Booster(levelGUI.UpdateNumberOfBoosts);
+            _onLevelOver += _customerCounter.Cleanup;
+            _onLevelOver += _booster.Cleanup;
+            levelGUI.OnGetBoostClick += _booster.GetNewBoost;
+            levelGUI.OnSpendBoostClick += _booster.TrySpendBoost;
+            menuGUI.OnStart += () => StartLevel(restaurant);
+            levelGUI.OnRestartClick += () => RestartLevel(restaurant);
+            _onLevelCompleted += () => levelGUI.OpenMenu(LevelGUI.MenuMode.LevelCompleted);
+            _onLevelFailed += () => levelGUI.OpenMenu(LevelGUI.MenuMode.LevelFailed);
+            _onLevelStarted += restaurant.StartLevel;
+        }
+        
+        public void Initialize() {  }
+        
+        private void StartLevel(Restaurant restaurant)
+        {
+            var levelData = new LevelData();
+            if (!LevelEditor.GetLevelDataFromJSON(_settings.LevelFile, ref levelData, _settings.Food))
             {
-                _servedCustomers = new ReactiveProperty<Vector2Int>();
-                _servedCustomers.Subscribe(levelGUI.UpdateCustomersNumber);
+                Debug.LogError("Error: couldn't read level data file.");
+                return;
             }
 
-            void InitTimer()
-            {
-                _timer = new LevelTimer();
-                _timer.TimerValue.Subscribe(levelGUI.UpdateLevelTimer);
-                _timer.TimeOutEvent += OnTimeOut;
-            }
-
-            void InitBoosts()
-            {
-                _boostsNumber = new ReactiveProperty<int>();
-                _boostsNumber.Subscribe(levelGUI.UpdateNumberOfBoosts);
-                levelGUI.OnGetBoostClick += GetBoost;
-                levelGUI.OnSpendBoostClick += () => _onBoostClicked?.Invoke();
-            }
+            _booster.Init(levelData.NumberOfBoosts, restaurant);
+            _timer.Init(levelData.TimeInSeconds);
+            _customerCounter.Init(levelData.CustomersCount, restaurant);
+            _onLevelStarted?.Invoke(levelData);
         }
 
-        public event Action OnLevelCompleted { add => _onLevelCompleted += value; remove => _onLevelCompleted -= value; }
-
-        public event Action OnLevelFailed { add => _onLevelFailed += value; remove => _onLevelFailed -= value; }
-
-        public void StartLevel(Restaurant restaurant)
+        private void RestartLevel(Restaurant restaurant)
         {
-            LevelEditor.GetLevelDataFromJSON(_settings.LevelFile, ref _levelData, _settings.Food);
-            _boostsNumber.Value = _levelData.NumberOfBoosts;
-            _timer.Start(_levelData.TimeInSeconds);
-            _servedCustomers.Value = new Vector2Int(0, _levelData.CustomersCount);
-
-            restaurant.StartLevel(_levelData, OnCustomerServed);
-            restaurant.OnOrderEnforced += SpendBoost;
-            _onBoostClicked = restaurant.TryCompleteOldestOrder;
+            _onLevelOver?.Invoke();
+            StartLevel(restaurant);
         }
 
-        private void GetBoost() { _boostsNumber.Value += 1; }
-
-        private void SpendBoost()
+        private void CompleteLevel()
         {
-            if (_boostsNumber.Value <= 0) return;
-            _boostsNumber.Value -= 1;
+            _onLevelCompleted?.Invoke();
+            _onLevelOver?.Invoke();
         }
 
-        public void OnTimePassed(float deltaTime) { _timer.Update(deltaTime); }
-
-        private void OnTimeOut() { _onLevelFailed?.Invoke(); }
-
-        private void OnCustomerServed()
+        private void FailLevel()
         {
-            _servedCustomers.Value = _servedCustomers.Value.ChangeX(1);
-            if (_servedCustomers.Value.x == _servedCustomers.Value.y) _onLevelCompleted?.Invoke();
+            _onLevelFailed?.Invoke();
+            _onLevelOver?.Invoke();
         }
 
         [Serializable]
@@ -91,35 +81,113 @@ namespace Game.Data.Levels
             public FoodCollection Food;
         }
 
-        private class LevelTimer
+        private class Timer
         {
-            private Action _timeOutEvent;
+            private readonly Action _timeOutEvent;
+            private readonly ReactiveProperty<int> _timerValue;
             private float _timePassedSinceLastUpdate;
 
-            public LevelTimer() { TimerValue = new ReactiveProperty<int>(); }
-            public ReactiveProperty<int> TimerValue { get; }
-
-            public event Action TimeOutEvent { add => _timeOutEvent += value; remove => _timeOutEvent -= value; }
-
-            public void Start(int timeInSeconds)
+            public Timer(GameController gameController, Action<int> onTimerValueChanged, Action timeOutEvent)
             {
-                _timePassedSinceLastUpdate = 0f;
-                TimerValue.Value = timeInSeconds;
+                _timerValue = new ReactiveProperty<int>();
+                _timerValue.Subscribe(onTimerValueChanged);
+                gameController.OnTimePassed += Update;
+                _timeOutEvent = timeOutEvent;
             }
 
-            public void Update(float deltaTime)
+            public void Init(int timeInSeconds)
+            {
+                _timePassedSinceLastUpdate = 0f;
+                _timerValue.Value = timeInSeconds;
+            }
+
+            private void Update(float deltaTime)
             {
                 _timePassedSinceLastUpdate += deltaTime;
                 while (_timePassedSinceLastUpdate >= 1f)
                 {
                     _timePassedSinceLastUpdate -= 1f;
-                    TimerValue.Value -= 1;
-                    if (TimerValue.Value <= 0)
+                    _timerValue.Value -= 1;
+                    if (_timerValue.Value <= 0)
                     {
                         _timeOutEvent?.Invoke();
                         break;
                     }
                 }
+            }
+        }
+
+        private class Booster
+        {
+            private readonly ReactiveProperty<int> _boostsNumber;
+            private Action _onBoostSpent;
+            private Action _onCleanup;
+
+            public Booster(Action<int> onValueChanged)
+            {
+                _boostsNumber = new ReactiveProperty<int>();
+                _boostsNumber.Subscribe(onValueChanged);
+            }
+
+            public void Init(int value, Restaurant restaurant)
+            {
+                _onBoostSpent += restaurant.TryCompleteOldestOrder;
+                restaurant.OnOrderBoosted += OnBoostActionCompleted;
+
+                _onCleanup += () => _onBoostSpent -= restaurant.TryCompleteOldestOrder;
+                _onCleanup += () => restaurant.OnOrderBoosted -= OnBoostActionCompleted;
+
+                _boostsNumber.Value = value;
+            }
+
+            public void GetNewBoost() { _boostsNumber.Value += 1; }
+
+            public void TrySpendBoost()
+            {
+                if (_boostsNumber.Value <= 0) return;
+                _onBoostSpent?.Invoke();
+            }
+
+            private void OnBoostActionCompleted() { _boostsNumber.Value -= 1; }
+
+            public void Cleanup()
+            {
+                _onCleanup?.Invoke();
+                _onCleanup = null;
+            }
+        }
+
+        private class CustomerCounter
+        {
+            private readonly Action _onComplete;
+            private readonly ReactiveProperty<Vector2Int> _servedCustomers;
+            private Action _onCleanup;
+
+            public CustomerCounter(Action<Vector2Int> onValueChanged, Action onComplete)
+            {
+                _servedCustomers = new ReactiveProperty<Vector2Int>();
+                _servedCustomers.Subscribe(onValueChanged);
+                _onComplete = onComplete;
+            }
+
+            public void Init(int value, Restaurant restaurant)
+            {
+                _servedCustomers.Value = new Vector2Int(0, value);
+                restaurant.OnCustomerServed += OnCustomerServed;
+                _onCleanup += () => restaurant.OnCustomerServed -= OnCustomerServed;
+            }
+
+            private void OnCustomerServed()
+            {
+                _servedCustomers.Value = _servedCustomers.Value.ChangeX(1);
+                if (_servedCustomers.Value.x == _servedCustomers.Value.y)
+                    _onComplete?.Invoke();
+            }
+
+            public void Cleanup()
+            {
+                _onCleanup?.Invoke();
+                _onCleanup = null;
             }
         }
     }

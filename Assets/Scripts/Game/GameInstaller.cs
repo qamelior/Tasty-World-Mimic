@@ -8,7 +8,7 @@ namespace Game
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
-            Container.Bind<LevelManager>().AsSingle();
+            Container.BindInterfacesAndSelfTo<LevelManager>().AsSingle();
         }
     }
 }

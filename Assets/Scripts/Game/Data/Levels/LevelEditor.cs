@@ -21,7 +21,7 @@ namespace Game.Data.Levels
         public void CreateNewFile(bool editFile = true, bool selectFile = true)
         {
             string uniqueName = PickFileName();
-            _levelData = new LevelData(uniqueName);
+            _levelData = new LevelData();
             WriteJSONFile(uniqueName);
 #if UNITY_EDITOR
             AssetDatabase.Refresh();
@@ -84,12 +84,13 @@ namespace Game.Data.Levels
             writer.Write(JsonConvert.SerializeObject(_levelData));
         }
 
-        public static void GetLevelDataFromJSON(TextAsset file, ref LevelData data, FoodCollection foodCollection)
+        public static bool GetLevelDataFromJSON(TextAsset file, ref LevelData data, FoodCollection foodCollection)
         {
-            if (file == null) return;
+            if (file == null) return false;
 
             data = JsonConvert.DeserializeObject<LevelData>(file.text);
             data.DeserializeMeals(foodCollection);
+            return true;
         }
 
         private bool GetLevelDataFromJSON(string path)

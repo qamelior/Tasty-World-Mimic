@@ -17,11 +17,11 @@ namespace Restaurants
         private List<CustomerOrder> _activeOrders;
         private int _customerIDCounter;
         private Action _onCustomerServed;
-        private Action _onOrderEnforced;
         private Queue<CustomerOrder> _orders;
-
-        public Restaurant(Transform customersHolder,
-            CustomerSpot.Factory customerSpotFactory, MealSource.Factory mealSourceFactory, Settings settings)
+        private Action _onOrderBoosted;
+        public event Action OnCustomerServed { add => _onCustomerServed += value; remove => _onCustomerServed -= value; }
+        public event Action OnOrderBoosted { add => _onOrderBoosted += value; remove => _onOrderBoosted -= value; }
+        public Restaurant(Transform customersHolder, CustomerSpot.Factory customerSpotFactory, MealSource.Factory mealSourceFactory, Settings settings)
         {
             _customersHolder = customersHolder;
             _customerSpotFactory = customerSpotFactory;
@@ -41,15 +41,11 @@ namespace Restaurants
 
         private CustomerOrder GetNextOrder() { return _orders.Count == 0 ? null : _orders.Dequeue(); }
 
-        public event Action OnOrderEnforced { add => _onOrderEnforced += value; remove => _onOrderEnforced -= value; }
-
-        public void StartLevel(LevelData levelData, Action onCustomerServed)
+        public void StartLevel(LevelData levelData)
         {
             MopTheFloor();
             CreateOrders();
             SpawnCustomers(CreateSpots());
-            _onCustomerServed = onCustomerServed;
-            _onOrderEnforced = null;
 
             void CreateOrders()
             {
@@ -91,7 +87,7 @@ namespace Restaurants
                 return;
             var order = _activeOrders[0];
             order.ForceComplete();
-            _onOrderEnforced?.Invoke();
+            _onOrderBoosted?.Invoke();
         }
 
         private void MopTheFloor() { _customersHolder.DestroyChildren(); }

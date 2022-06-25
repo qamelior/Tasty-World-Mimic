@@ -1,71 +1,71 @@
 .inside-panel {
-    border-top-left-radius: 25px;
-    border-bottom-left-radius: 25px;
-    border-top-right-radius: 25px;
-    border-bottom-right-radius: 25px;
-    background-image: url('/Assets/Sprites/white rect.png');
-    -unity-background-image-tint-color: rgb(224, 186, 130);
-    justify-content: flex-start;
-    align-items: center;
-    flex-direction: row;
-    height: 100%;
-    margin-left: 20px;
-}
+        border-top-left-radius: 25px;
+        border-bottom-left-radius: 25px;
+        border-top-right-radius: 25px;
+        border-bottom-right-radius: 25px;
+        background-image: url('/Assets/Sprites/white rect.png');
+        -unity-background-image-tint-color: rgb(224, 186, 130);
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: row;
+        height: 100%;
+        margin-left: 20px;
+        }
 
-.text {
-    -unity-font: url('Library/unity default resources');
-    -unity-text-align: middle-center;
-    -unity-font-style: bold;
-    font-size: 36px;
-    left: -10px;
-    color: rgb(0, 0, 0);
-}
+        .text {
+        -unity-font: url('Library/unity default resources');
+        -unity-text-align: middle-center;
+        -unity-font-style: bold;
+        font-size: 36px;
+        left: -10px;
+        color: rgb(0, 0, 0);
+        }
 
-.icon {
-    -unity-background-scale-mode: scale-to-fit;
-    width: 75px;
-    height: 75px;
-    left: -20px;
-}
+        .icon {
+        -unity-background-scale-mode: scale-to-fit;
+        width: 75px;
+        height: 75px;
+        left: -20px;
+        }
 
-.menu-background {
-    background-image: url('/Assets/Sprites/menu background.jpg');
-    -unity-background-image-tint-color: rgb(255, 255, 255);
-    -unity-background-scale-mode: scale-and-crop;
-}
+        .menu-background {
+        background-image: url('/Assets/Sprites/menu background.jpg');
+        -unity-background-image-tint-color: rgb(255, 255, 255);
+        -unity-background-scale-mode: scale-and-crop;
+        }
 
-.button {
-    font-size: 36px;
-    color: rgb(0, 0, 0);
-    background-image: url('/Assets/Sprites/white rect.png');
-    -unity-background-image-tint-color: rgb(249, 222, 182);
-    -unity-font-style: bold;
-    border-left-color: rgb(0, 0, 0);
-    border-right-color: rgb(0, 0, 0);
-    border-top-color: rgb(0, 0, 0);
-    border-bottom-color: rgb(0, 0, 0);
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-}
+        .button {
+        font-size: 36px;
+        color: rgb(0, 0, 0);
+        background-image: url('/Assets/Sprites/white rect.png');
+        -unity-background-image-tint-color: rgb(249, 222, 182);
+        -unity-font-style: bold;
+        border-left-color: rgb(0, 0, 0);
+        border-right-color: rgb(0, 0, 0);
+        border-top-color: rgb(0, 0, 0);
+        border-bottom-color: rgb(0, 0, 0);
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        border-left-width: 1px;
+        border-right-width: 1px;
+        border-top-width: 1px;
+        border-bottom-width: 1px;
+        }
 
-.button:hover {
-    font-size: 36px;
-    color: rgb(0, 0, 0);
-    background-image: url('/Assets/Sprites/white rect.png');
-    -unity-background-image-tint-color: rgb(226, 178, 106);
-    -unity-font-style: bold;
-    border-left-color: rgb(0, 0, 0);
-    border-right-color: rgb(0, 0, 0);
-    border-top-color: rgb(0, 0, 0);
-    border-bottom-color: rgb(0, 0, 0);
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-}
+        .button:hover {
+        font-size: 36px;
+        color: rgb(0, 0, 0);
+        background-image: url('/Assets/Sprites/white rect.png');
+        -unity-background-image-tint-color: rgb(226, 178, 106);
+        -unity-font-style: bold;
+        border-left-color: rgb(0, 0, 0);
+        border-right-color: rgb(0, 0, 0);
+        border-top-color: rgb(0, 0, 0);
+        border-bottom-color: rgb(0, 0, 0);
+        border-left-width: 1px;
+        border-right-width: 1px;
+        border-top-width: 1px;
+        border-bottom-width: 1px;
+        }
