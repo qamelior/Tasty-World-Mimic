@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Restaurants.Customers;
+using Restaurants.Customers.Orders;
 using UnityEngine;
 
 // ReSharper disable LoopCanBeConvertedToQuery
@@ -12,8 +13,8 @@ namespace Game.Data
     {
         public List<MealPreset> Meals;
 
-        [SerializeField] private CustomerOrderPreset[] _orderPresets;
-        public CustomerOrderPreset[] OrderPresets => _orderPresets;
+        [SerializeField] private OrderPresetSO[] _orderPresets;
+        public OrderPresetSO[] OrderPresets => _orderPresets;
 
         //TODO call this func
         public void ValidateCollection()
@@ -30,7 +31,7 @@ namespace Game.Data
             return preset != null;
         }
 
-        public CustomerOrderPreset GetPreset(string id)
+        public OrderPresetSO GetPreset(string id)
         {
             foreach (var preset in _orderPresets)
                 if (preset.UID == id)
@@ -38,9 +39,9 @@ namespace Game.Data
             return null;
         }
 
-        public CustomerOrderPreset SelectRandomPreset(int mealsNumber)
+        public OrderPresetSO SelectRandomPreset(int mealsNumber)
         {
-            var selection = new List<CustomerOrderPreset>();
+            var selection = new List<OrderPresetSO>();
             foreach (var preset in _orderPresets)
                 if (preset.Meals.Length == mealsNumber)
                     selection.Add(preset);

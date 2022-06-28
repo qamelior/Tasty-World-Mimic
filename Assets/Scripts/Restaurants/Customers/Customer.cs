@@ -17,8 +17,6 @@ namespace Restaurants.Customers
         private Vector3 _spotLocation;
         private State _state;
 
-        public event Action OnArrive { add => _onArrive += value; remove => _onArrive -= value; }
-
         [Inject]
         public void Construct(GameController gameController, Settings settings)
         {
@@ -26,10 +24,12 @@ namespace Restaurants.Customers
             _settings = settings;
         }
 
-        public void Init(Vector3 destination, string id)
+        public void Init(string id, Transform parent, Vector3 origin, Vector3 destination, Action onArrive)
         {
+            transform.SetParent(parent);
+            transform.position = _spawnLocation = origin;
             _idLabelRef.text = $"{id}";
-            _spawnLocation = transform.position;
+            _onArrive = onArrive;
             _spotLocation = destination;
             _state = State.Spawned;
             IterateState();

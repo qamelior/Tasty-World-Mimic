@@ -5,13 +5,13 @@ using UnityEngine;
 
 namespace Game.Data.Levels
 {
-    public class LevelEditor : MonoBehaviour
+    public class EntryEditor : MonoBehaviour
     {
         private const string LevelsFolderPath = "LevelData/";
         private const string FileName = "TastyLevel_";
         [SerializeField] private FoodCollection _foodCollection;
         [SerializeField] private TextAsset _selectedFile;
-        [SerializeField] private LevelData _levelData;
+        [SerializeField] private EntryData _entryData;
         public bool EditMode { private set; get; }
         public TextAsset SelectedFile => _selectedFile;
         public string FakePath => $"Resources/{LevelsFolderPath}";
@@ -21,7 +21,7 @@ namespace Game.Data.Levels
         public void CreateNewFile(bool editFile = true, bool selectFile = true)
         {
             string uniqueName = PickFileName();
-            _levelData = new LevelData();
+            _entryData = new EntryData();
             WriteJSONFile(uniqueName);
 #if UNITY_EDITOR
             AssetDatabase.Refresh();
@@ -72,23 +72,23 @@ namespace Game.Data.Levels
         public void OnSelectedAssetChanged()
         {
             FinishEdit(false);
-            GetLevelDataFromJSON(_selectedFile, ref _levelData, _foodCollection);
+            GetLevelDataFromJSON(_selectedFile, ref _entryData, _foodCollection);
         }
 
         private void WriteJSONFile(string fileShortName)
         {
-            _levelData.SerializeMeals(_foodCollection);
-            _levelData.Validate();
+            _entryData.SerializeMeals(_foodCollection);
+            _entryData.Validate();
             using var fs = File.Open(FullFilePath(fileShortName), FileMode.Create);
             using var writer = new StreamWriter(fs);
-            writer.Write(JsonConvert.SerializeObject(_levelData));
+            writer.Write(JsonConvert.SerializeObject(_entryData));
         }
 
-        public static bool GetLevelDataFromJSON(TextAsset file, ref LevelData data, FoodCollection foodCollection)
+        public static bool GetLevelDataFromJSON(TextAsset file, ref EntryData data, FoodCollection foodCollection)
         {
             if (file == null) return false;
 
-            data = JsonConvert.DeserializeObject<LevelData>(file.text);
+            data = JsonConvert.DeserializeObject<EntryData>(file.text);
             data.DeserializeMeals(foodCollection);
             return true;
         }
@@ -98,7 +98,7 @@ namespace Game.Data.Levels
             var file = Resources.Load<TextAsset>(path);
             if (file == null)
                 return false;
-            _levelData = JsonConvert.DeserializeObject<LevelData>(file.text);
+            _entryData = JsonConvert.DeserializeObject<EntryData>(file.text);
             return true;
         }
     }

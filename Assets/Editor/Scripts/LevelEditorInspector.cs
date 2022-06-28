@@ -6,10 +6,10 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 #if UNITY_EDITOR
-[CustomEditor(typeof(LevelEditor))]
+[CustomEditor(typeof(EntryEditor))]
 public class LevelEditorInspector : UIToolkitEditorBase
 {
-    private LevelEditor _editor;
+    private EntryEditor _editor;
     private const string NewFileButtonID = "CreateNewLevel";
     private const string EditFileButtonID = "EditFileButton";
     private const string SaveFileButtonID = "SaveFileButton";
@@ -22,7 +22,7 @@ public class LevelEditorInspector : UIToolkitEditorBase
     {
         base.CreateInspectorGUI();
         
-        _editor = (LevelEditor)target;
+        _editor = (EntryEditor)target;
         _editor.ValidateEditMode();
 
         _inspector.RegisterButtonEvent(NewFileButtonID, evt => _editor.CreateNewFile());

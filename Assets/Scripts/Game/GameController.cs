@@ -9,17 +9,16 @@ namespace Game
 {
     public class GameController : ITickable
     {
-        public const bool ShowDebugLogs = true;
+        public const bool ShowDebugLogs = false;
         private GameStates _currentGameState;
         private Action<float> _onTimePassed;
 
         public GameController(MainMenuGUI menuUI, LevelGUI levelGUI)
         {
             _currentGameState = GameStates.MainMenu;
-
-            menuUI.OnStart += () => ChangeGameState(GameStates.Playing);
-            levelGUI.OnRestartClick += () => ChangeGameState(GameStates.Playing);
+            menuUI.OnStartClick += () => ChangeGameState(GameStates.Playing);
             levelGUI.OnQuitClick += Quit;
+            levelGUI.OnRestartClick += () => ChangeGameState(GameStates.Playing);
             levelGUI.OnMenuModeSwitch += mode =>
                 ChangeGameState(mode == LevelGUI.MenuMode.Closed ? GameStates.Playing : GameStates.Menu);
         }
@@ -35,7 +34,7 @@ namespace Game
         public event Action<float> OnTimePassed { add => _onTimePassed += value; remove => _onTimePassed -= value; }
 
 
-        private void Quit()
+        public void Quit()
         {
 #if UNITY_EDITOR
             EditorApplication.isPlaying = false;

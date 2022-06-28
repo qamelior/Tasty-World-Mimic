@@ -1,10 +1,10 @@
 using Game.Data;
 using UnityEngine;
 
-namespace Restaurants.Customers
+namespace Restaurants.Customers.Orders
 {
     [CreateAssetMenu(menuName = "Food/Order Preset")]
-    public class CustomerOrderPreset : ScriptableObject
+    public class OrderPresetSO : ScriptableObject
     {
         [SerializeField] private string _uid;
         [SerializeField] private MealPreset[] _meals;

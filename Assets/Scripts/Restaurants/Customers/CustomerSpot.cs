@@ -1,7 +1,9 @@
 using System;
 using _Extensions;
 using Game;
+using Game.Data.Levels;
 using GUI;
+using Restaurants.Customers.Orders;
 using UnityEngine;
 using Zenject;
 
@@ -12,42 +14,44 @@ namespace Restaurants.Customers
         [SerializeField] private Transform _customersSpawnRoot;
         private Customer.Factory _customerFactory;
         private Vector3 _customerSpawnLocation;
-        private Action<CustomerSpot> _onSpotVacated;
-        private CustomerOrder _order;
         private CustomerOrderGUI _orderGUI;
-        public Transform CustomerSpawnRoot => _customersSpawnRoot;
+        private OrderManager _orderLevelManager;
+        private LevelManager _levelLevelManager;
 
         [Inject]
-        public void Construct(Customer.Factory customerFactory) { _customerFactory = customerFactory; }
-
-        public void Setup(Vector3 customerSpawnLocation, Action<CustomerSpot> onVacate)
+        public void Construct(Restaurant restaurant, LevelManager levelManager, OrderManager orderManager, Customer.Factory customerFactory)
         {
+            _levelLevelManager = levelManager;
+            _orderLevelManager = orderManager;
+            _customerFactory = customerFactory;
+        }
+
+        public void Init(Vector3 position, Vector3 customerSpawnLocation)
+        {
+            transform.position = position;
             _customerSpawnLocation = customerSpawnLocation;
             _customersSpawnRoot.DestroyChildren();
             _orderGUI = GetComponent<CustomerOrderGUI>();
             _orderGUI.Init();
-            _orderGUI.HideAll();
-            _onSpotVacated += onVacate;
+
+            TrySpawnCustomer();
         }
 
-        public void SpawnCustomer(string id, CustomerOrder order, Action onArrive)
+        private void TrySpawnCustomer()
         {
-            var customer = _customerFactory.Create();
+            var order = _orderLevelManager.PopNextOrder(_orderGUI);
+            if (order == null)
+                return;
 
-            var customerTransform = customer.transform;
-            customerTransform.SetParent(_customersSpawnRoot);
-            customerTransform.position = _customerSpawnLocation;
-
+            string id = _levelLevelManager.GetCustomerUID();
             if (GameController.ShowDebugLogs)
-                Debug.LogFormat($"Spawning customer {id} with order: {order.Preset.UID}");
-            customer.Init(transform.position, id);
-            customer.OnArrive += onArrive;
-            customer.OnArrive += () => _orderGUI.ShowAll(_order);
-            _order = order;
-            _order.OnMealDelivered += _orderGUI.HideMeal;
-            _order.OnOrderFulfilled += customer.MoveToExit;
-            _order.OnOrderFulfilled += () => _orderGUI.HideAll();
-            _order.OnOrderFulfilled += () => _onSpotVacated?.Invoke(this);
+                Debug.LogFormat($"Spawning customer {id} with order: {order.PresetSO.UID}");
+
+            void OnArriveEvent() => _orderLevelManager.ActivateOrder(order);
+            var customer = _customerFactory.Create();
+            customer.Init(id, _customersSpawnRoot, _customerSpawnLocation, transform.position, OnArriveEvent);
+            order.OnOrderFulfilled += customer.MoveToExit;
+            order.OnOrderFulfilled += TrySpawnCustomer;
         }
 
         public class Factory : PlaceholderFactory<CustomerSpot>

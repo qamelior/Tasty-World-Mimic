@@ -34,6 +34,7 @@ namespace GUI
 
         private Label _boostsNumber;
         private Button _continueButton;
+        private MenuMode _currentMenuMode;
         private Label _customersNumber;
         private Button _getBoostButton;
         private Label _levelTimer;
@@ -44,16 +45,12 @@ namespace GUI
         private Action _onQuitClick;
         private Action _onRestartClick;
         private Action _onSpendBoostClick;
-        private MenuMode _currentMenuMode;
 
         public event Action<MenuMode> OnMenuModeSwitch { add => _onMenuModeSwitch += value; remove => _onMenuModeSwitch -= value; }
 
         public event Action OnGetBoostClick { add => _onGetBoostClick += value; remove => _onGetBoostClick -= value; }
-
         public event Action OnSpendBoostClick { add => _onSpendBoostClick += value; remove => _onSpendBoostClick -= value; }
-
         public event Action OnRestartClick { add => _onRestartClick += value; remove => _onRestartClick -= value; }
-
         public event Action OnQuitClick { add => _onQuitClick += value; remove => _onQuitClick -= value; }
 
         [Inject]
@@ -104,6 +101,7 @@ namespace GUI
             UpdateMenuVisuals(mode);
             ChangeMenuMode(mode);
         }
+
         private void CloseMenu() { ChangeMenuMode(MenuMode.Closed); }
 
         private void ToggleMenu()
@@ -113,7 +111,7 @@ namespace GUI
             else if (_currentMenuMode == MenuMode.Closed)
                 OpenMenu(MenuMode.Paused);
         }
-        
+
         private void ChangeMenuMode(MenuMode mode)
         {
             _currentMenuMode = mode;

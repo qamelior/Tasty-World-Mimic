@@ -1,12 +1,15 @@
 using _Extensions;
-using Restaurants.Customers;
+using Restaurants.Customers.Orders;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace GUI
 {
-    public class CustomerOrderGUI : GUIWindow
+    public class CustomerOrderGUI : MonoBehaviour
     {
         private OrderMealUI[] _mealUI;
+        private VisualElement _root;
+        private UIDocument _ui;
 
         public void Init()
         {
@@ -18,12 +21,13 @@ namespace GUI
                 new OrderMealUI(_root, "Second", "SecondLabel"),
                 new OrderMealUI(_root, "Third", "ThirdLabel")
             };
+            Hide();
         }
 
-        public void ShowAll(CustomerOrder order)
+        public void ShowOrder(Order order)
         {
             _root.Show();
-            var orderedMeals = order.Preset.Meals;
+            var orderedMeals = order.PresetSO.Meals;
             for (var i = 0; i < _mealUI.Length; i++)
                 if (i < orderedMeals.Length)
                     _mealUI[i].Show(orderedMeals[i].DisplayName, orderedMeals[i].UID);
@@ -31,9 +35,9 @@ namespace GUI
                     _mealUI[i].Hide();
         }
 
-        public void HideAll() { _root.Hide(); }
+        public void Hide() { _root.Hide(); }
 
-        public void HideMeal(string mealID)
+        public void OnMealDelivered(string mealID)
         {
             foreach (var elem in _mealUI)
                 if (elem.IsVisible && elem.MealID == mealID)

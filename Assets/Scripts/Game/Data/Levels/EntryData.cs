@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Restaurants.Customers;
+using Restaurants.Customers.Orders;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Game.Data.Levels
 {
     [Serializable]
-    public class LevelData
+    public class EntryData
     {
         public enum LevelType
         {
@@ -23,7 +24,7 @@ namespace Game.Data.Levels
         public int MaxMealsInOneOrder;
         public int CustomersCount;
         public List<string> OrderStrings;
-        [SerializeField] private List<CustomerOrderPreset> _orders;
+        [SerializeField] private List<OrderPresetSO> _orders;
 
         public void Validate()
         {
@@ -81,7 +82,7 @@ namespace Game.Data.Levels
             if (Type != LevelType.Fixed)
                 return;
 
-            _orders = new List<CustomerOrderPreset>();
+            _orders = new List<OrderPresetSO>();
             for (int i = OrderStrings.Count - 1; i >= 0; i--)
             {
                 string id = OrderStrings[i];
@@ -100,12 +101,12 @@ namespace Game.Data.Levels
             OrderStrings.Clear();
         }
 
-        public ReadOnlyCollection<CustomerOrderPreset> GenerateOrders(FoodCollection foodCollection)
+        public ReadOnlyCollection<OrderPresetSO> GenerateOrders(FoodCollection foodCollection)
         {
             if (Type == LevelType.Fixed)
                 return _orders.AsReadOnly();
 
-            var presets = new List<CustomerOrderPreset>();
+            var presets = new List<OrderPresetSO>();
             int customersLeft = CustomersCount;
             int mealsLeft = TotalMealsNumber;
 

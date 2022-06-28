@@ -8,7 +8,7 @@ namespace GUI
     {
         [SerializeField] private bool _enableOnStart = true;
         protected VisualElement _root;
-        protected UIDocument _ui;
+        private UIDocument _ui;
 
         [Inject]
         public virtual void Construct()
@@ -21,8 +21,8 @@ namespace GUI
                 Hide();
         }
 
-        protected void Show() { }
+        protected virtual void Show() { gameObject.SetActive(true);}
 
-        protected void Hide() { }
+        protected virtual void Hide() { gameObject.SetActive(false);}
     }
 }

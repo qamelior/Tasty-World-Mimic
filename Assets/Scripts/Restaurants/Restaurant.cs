@@ -5,6 +5,7 @@ using Game;
 using Game.Data;
 using Game.Data.Levels;
 using Restaurants.Customers;
+using Restaurants.Customers.Orders;
 using UnityEngine;
 
 namespace Restaurants
@@ -14,108 +15,40 @@ namespace Restaurants
         private readonly Transform _customersHolder;
         private readonly CustomerSpot.Factory _customerSpotFactory;
         private readonly Settings _settings;
-        private List<CustomerOrder> _activeOrders;
+
         private int _customerIDCounter;
-        private Action _onCustomerServed;
-        private Queue<CustomerOrder> _orders;
-        private Action _onOrderBoosted;
-        public event Action OnCustomerServed { add => _onCustomerServed += value; remove => _onCustomerServed -= value; }
-        public event Action OnOrderBoosted { add => _onOrderBoosted += value; remove => _onOrderBoosted -= value; }
-        public Restaurant(Transform customersHolder, CustomerSpot.Factory customerSpotFactory, MealSource.Factory mealSourceFactory, Settings settings)
+        private Action _onLevelStarted;
+
+        public FoodCollection ServedFood => _settings.ServedFood;
+
+        public Restaurant(LevelManager levelManager, OrderManager orderManager, Transform customersHolder,
+            CustomerSpot.Factory customerSpotFactory, MealSource.Factory mealSourceFactory,
+            Settings settings)
         {
             _customersHolder = customersHolder;
             _customerSpotFactory = customerSpotFactory;
             _settings = settings;
-            SpawnMealSources();
 
-            void SpawnMealSources()
+            foreach (var sourceData in _settings.MealSources)
             {
-                foreach (var sourceData in _settings.MealSources)
-                {
-                    var source = mealSourceFactory.Create();
-                    source.transform.localPosition = sourceData.LocalPosition;
-                    source.Set(sourceData.MealType, OnMealClicked);
-                }
-            }
-        }
-
-        private CustomerOrder GetNextOrder() { return _orders.Count == 0 ? null : _orders.Dequeue(); }
-
-        public void StartLevel(LevelData levelData)
-        {
-            MopTheFloor();
-            CreateOrders();
-            SpawnCustomers(CreateSpots());
-
-            void CreateOrders()
-            {
-                _orders = new Queue<CustomerOrder>();
-                _activeOrders = new List<CustomerOrder>();
-                var presets = levelData.GenerateOrders(_settings.ServedFood);
-                foreach (var p in presets)
-                    _orders.Enqueue(new CustomerOrder(p));
-                if (GameController.ShowDebugLogs)
-                    Debug.Log($"This level has {_orders.Count} orders");
+                var source = mealSourceFactory.Create();
+                source.transform.localPosition = sourceData.LocalPosition;
+                source.Set(sourceData.MealType);
+                source.OnClick += orderManager.OnMealClicked;
             }
 
-            List<CustomerSpot> CreateSpots()
-            {
-                var routes = _settings.CustomerRoutes;
-                var spots = new List<CustomerSpot>();
-                foreach (var route in routes)
-                {
-                    var spot = _customerSpotFactory.Create();
-                    spot.transform.position = route.SpotLocation;
-                    spot.Setup(route.CustomerSpawnLocation, TrySpawnNextCustomer);
-                    spots.Add(spot);
-                }
-
-                return spots;
-            }
-
-            void SpawnCustomers(List<CustomerSpot> spots)
-            {
-                _customerIDCounter = 1;
-                foreach (var spot in spots)
-                    TrySpawnNextCustomer(spot);
-            }
+            levelManager.ChangeSelectedRestaurant(this);
+            orderManager.ChangeSelectedRestaurant(this);
         }
 
-        public void TryCompleteOldestOrder()
+        public void StartLevel()
         {
-            if (_activeOrders == null || _activeOrders.Count < 1)
-                return;
-            var order = _activeOrders[0];
-            order.ForceComplete();
-            _onOrderBoosted?.Invoke();
-        }
+            //mop the floor
+            _customersHolder.DestroyChildren();
 
-        private void MopTheFloor() { _customersHolder.DestroyChildren(); }
-
-        private void TrySpawnNextCustomer(CustomerSpot spot)
-        {
-            var order = GetNextOrder();
-            if (order == null)
-                return;
-
-            order.OnOrderFulfilled += () => _onCustomerServed?.Invoke();
-            order.OnOrderFulfilled += () => _activeOrders.Remove(order);
-            spot.SpawnCustomer($"{_customerIDCounter++}", order, () => _activeOrders.Add(order));
-        }
-
-        private void OnMealClicked(string mealID)
-        {
-            if (_activeOrders == null)
-                return;
-            if (GameController.ShowDebugLogs)
-                Debug.Log($"Trying to deliver {mealID}.\nActive orders count:{_activeOrders.Count}");
-            foreach (var order in _activeOrders)
-                if (order.TryDeliverMeal(mealID))
-                {
-                    if (GameController.ShowDebugLogs)
-                        Debug.Log($"Delivered {mealID} to {order.Preset}");
-                    break;
-                }
+            //create spots
+            foreach (var route in _settings.CustomerRoutes)
+                _customerSpotFactory.Create().Init(route.SpotLocation, route.CustomerSpawnLocation);
         }
 
         [Serializable]
