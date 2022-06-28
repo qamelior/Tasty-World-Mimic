@@ -1,5 +1,5 @@
 ﻿using System;
-using GUI;
+using GUI.Level;
 using UniRx;
 using Zenject;
 
@@ -11,10 +11,10 @@ namespace Game.Data.Levels
         private readonly ReactiveProperty<int> _timerValue;
         private float _timePassedSinceLastUpdate;
 
-        public Timer(GameController gameController, LevelManager levelManager, LevelGUI levelGUI)
+        public Timer(GameController gameController, LevelManager levelManager, TimerGUI timerGUI)
         {
             _timerValue = new ReactiveProperty<int>();
-            _timerValue.Subscribe(levelGUI.UpdateLevelTimer);
+            _timerValue.Subscribe(timerGUI.UpdateLevelTimer);
             _timeOutEvent += levelManager.FailLevel;
             gameController.OnTimePassed += Update;
             levelManager.OnLevelStarted += StartLevel;
@@ -22,7 +22,7 @@ namespace Game.Data.Levels
 
         public void Initialize() {  }
         
-        private void StartLevel(EntryData data)
+        private void StartLevel(LevelDataEntry data)
         {
             _timePassedSinceLastUpdate = 0f;
             _timerValue.Value = data.TimeInSeconds;

@@ -1,6 +1,7 @@
 using System;
 using Game.Data.Levels;
 using GUI;
+using GUI.Level;
 using UnityEditor;
 using UnityEngine;
 using Zenject;
@@ -9,18 +10,18 @@ namespace Game
 {
     public class GameController : ITickable
     {
-        public const bool ShowDebugLogs = false;
+        public const bool ShowDebugLogs = true;
         private GameStates _currentGameState;
         private Action<float> _onTimePassed;
 
-        public GameController(MainMenuGUI menuUI, LevelGUI levelGUI)
+        public GameController(MainMenuGUI mainMenuUI, MenuGUI menuGUI)
         {
             _currentGameState = GameStates.MainMenu;
-            menuUI.OnStartClick += () => ChangeGameState(GameStates.Playing);
-            levelGUI.OnQuitClick += Quit;
-            levelGUI.OnRestartClick += () => ChangeGameState(GameStates.Playing);
-            levelGUI.OnMenuModeSwitch += mode =>
-                ChangeGameState(mode == LevelGUI.MenuMode.Closed ? GameStates.Playing : GameStates.Menu);
+            mainMenuUI.OnStartClick += () => ChangeGameState(GameStates.Playing);
+            menuGUI.OnQuitClick += Quit;
+            menuGUI.OnRestartClick += () => ChangeGameState(GameStates.Playing);
+            menuGUI.OnMenuModeSwitch += mode =>
+                ChangeGameState(mode == MenuGUI.MenuMode.Closed ? GameStates.Playing : GameStates.Menu);
         }
 
         public bool GameIsPaused => _currentGameState != GameStates.Playing;

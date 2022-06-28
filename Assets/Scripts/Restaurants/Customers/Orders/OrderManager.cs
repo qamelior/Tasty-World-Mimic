@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Game;
+using Game.Data;
 using Game.Data.Levels;
 using GUI;
 using UnityEngine;
@@ -9,15 +10,15 @@ namespace Restaurants.Customers.Orders
 {
     public class OrderManager
     {
+        private readonly CustomerCounter _customerCounter;
+        private readonly Settings _settings;
         private List<Order> _activeOrders;
         private Action _onOrderBoosted;
         private Queue<Order> _orders;
 
-        private Restaurant _selectedRestaurant;
-        private readonly CustomerCounter _customerCounter;
-        
-        public OrderManager(LevelManager levelManager, CustomerCounter customerCounter)
+        public OrderManager(LevelManager levelManager, CustomerCounter customerCounter, Settings settings)
         {
+            _settings = settings;
             levelManager.OnLevelStarted += CreateOrders;
             _customerCounter = customerCounter;
         }
@@ -26,11 +27,11 @@ namespace Restaurants.Customers.Orders
         {
             if (_orders.Count == 0)
                 return null;
-                    
+
             var order = _orders.Dequeue();
             order.Init(orderGUI);
 
-            order.OnOrderFulfilled += () =>_activeOrders.Remove(order);
+            order.OnOrderFulfilled += () => _activeOrders.Remove(order);
             order.OnOrderFulfilled += _customerCounter.SubtractOneCustomer;
             return order;
         }
@@ -43,20 +44,18 @@ namespace Restaurants.Customers.Orders
 
         public event Action OnOrderBoosted { add => _onOrderBoosted += value; remove => _onOrderBoosted -= value; }
 
-        public void ChangeSelectedRestaurant(Restaurant restaurant) { _selectedRestaurant = restaurant; }
-
-        public void CreateOrders(EntryData entryData)
+        private void CreateOrders(LevelDataEntry entryData)
         {
             _orders = new Queue<Order>();
             _activeOrders = new List<Order>();
-            var presets = entryData.GenerateOrders(_selectedRestaurant.ServedFood);
+            var presets = entryData.GenerateOrders(_settings.ServedFood);
             foreach (var p in presets)
                 _orders.Enqueue(new Order(p));
             if (GameController.ShowDebugLogs)
                 Debug.Log($"This level has {_orders.Count} orders");
         }
 
-        public void TryCompleteOldestOrder()
+        public void CompleteOldestOrder()
         {
             if (_activeOrders == null || _activeOrders.Count < 1)
                 return;
@@ -64,8 +63,8 @@ namespace Restaurants.Customers.Orders
             order.ForceComplete();
             _onOrderBoosted?.Invoke();
         }
-        
-        public void OnMealClicked(string mealID)
+
+        public void DeliverMealToOrder(string mealID)
         {
             if (_activeOrders == null)
                 return;
@@ -78,6 +77,12 @@ namespace Restaurants.Customers.Orders
                         Debug.Log($"Delivered {mealID} to {order.PresetSO}");
                     break;
                 }
+        }
+
+        [Serializable]
+        public class Settings
+        {
+            public FoodCollection ServedFood;
         }
     }
 }

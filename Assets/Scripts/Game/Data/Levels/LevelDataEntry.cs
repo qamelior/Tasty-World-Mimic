@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 namespace Game.Data.Levels
 {
     [Serializable]
-    public class EntryData
+    public class LevelDataEntry
     {
         public enum LevelType
         {

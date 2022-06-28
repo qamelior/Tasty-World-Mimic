@@ -1,25 +1,19 @@
 using System;
-using System.Collections.Generic;
 using _Extensions;
-using Game;
 using Game.Data;
 using Game.Data.Levels;
 using Restaurants.Customers;
 using Restaurants.Customers.Orders;
 using UnityEngine;
+using Zenject;
 
 namespace Restaurants
 {
-    public class Restaurant
+    public class Restaurant: IInitializable
     {
         private readonly Transform _customersHolder;
         private readonly CustomerSpot.Factory _customerSpotFactory;
         private readonly Settings _settings;
-
-        private int _customerIDCounter;
-        private Action _onLevelStarted;
-
-        public FoodCollection ServedFood => _settings.ServedFood;
 
         public Restaurant(LevelManager levelManager, OrderManager orderManager, Transform customersHolder,
             CustomerSpot.Factory customerSpotFactory, MealSource.Factory mealSourceFactory,
@@ -33,28 +27,27 @@ namespace Restaurants
             {
                 var source = mealSourceFactory.Create();
                 source.transform.localPosition = sourceData.LocalPosition;
-                source.Set(sourceData.MealType);
-                source.OnClick += orderManager.OnMealClicked;
+                source.Set(sourceData.MealType, orderManager.DeliverMealToOrder);
             }
 
-            levelManager.ChangeSelectedRestaurant(this);
-            orderManager.ChangeSelectedRestaurant(this);
+            levelManager.OnLevelStartedDelayed += StartLevel;
         }
 
-        public void StartLevel()
+        public void Initialize() { }
+
+        private void StartLevel(LevelDataEntry obj)
         {
             //mop the floor
             _customersHolder.DestroyChildren();
 
             //create spots
             foreach (var route in _settings.CustomerRoutes)
-                _customerSpotFactory.Create().Init(route.SpotLocation, route.CustomerSpawnLocation);
+                _customerSpotFactory.Create().StartLevel(route.SpotLocation, route.CustomerSpawnLocation);
         }
 
         [Serializable]
         public class Settings
         {
-            public FoodCollection ServedFood;
             public MealSourceData[] MealSources;
             public CustomerRoute[] CustomerRoutes;
 

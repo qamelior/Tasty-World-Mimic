@@ -1,6 +1,7 @@
 using Game.Data.Levels;
 using Restaurants;
 using Restaurants.Customers;
+using Restaurants.Customers.Orders;
 using UnityEngine;
 using Zenject;
 
@@ -14,6 +15,7 @@ namespace Game
         public Customer.Settings Customer;
         public MealSource.Settings MealSource;
         public RestaurantInstaller.FactoryPrefabs Prefabs;
+        public OrderManager.Settings Orders;
 
         public override void InstallBindings()
         {
@@ -22,6 +24,7 @@ namespace Game
             Container.BindInstance(Customer);
             Container.BindInstance(MealSource);
             Container.BindInstance(Prefabs);
+            Container.BindInstance(Orders);
         }
     }
 }

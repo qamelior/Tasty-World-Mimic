@@ -1,6 +1,7 @@
 ﻿using System;
 using _Extensions;
 using GUI;
+using GUI.Level;
 using UniRx;
 using UnityEngine;
 using Zenject;
@@ -12,17 +13,17 @@ namespace Game.Data.Levels
         private readonly Action _onComplete;
         private readonly ReactiveProperty<Vector2Int> _servedCustomers;
         
-        public CustomerCounter(LevelGUI levelGUI, LevelManager levelManager)
+        public CustomerCounter(LevelManager levelManager, CustomerCounterGUI customerCounterGUI)
         {
             _servedCustomers = new ReactiveProperty<Vector2Int>();
-            _servedCustomers.Subscribe(levelGUI.UpdateCustomersNumber);
+            _servedCustomers.Subscribe(customerCounterGUI.UpdateCustomersNumber);
             _onComplete = levelManager.CompleteLevel;
             levelManager.OnLevelStarted += StartLevel;
         }
         
         public void Initialize() {}
 
-        private void StartLevel(EntryData data)
+        private void StartLevel(LevelDataEntry data)
         {
             _servedCustomers.Value = new Vector2Int(0, data.CustomersCount);
         }

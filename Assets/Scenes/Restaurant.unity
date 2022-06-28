@@ -564,14 +564,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _foodCollection: {fileID: 11400000, guid: 5e0c49a2d93669e46a2bb318542af7fc, type: 2}
   _selectedFile: {fileID: 4900000, guid: f6139a30edbab9c41b6fc8f6e52dcad6, type: 3}
-  _levelData:
-    DisplayName: 666
+  _entryData:
     Type: 0
-    NumberOfBoosts: 4
-    TimeInSeconds: 60
-    TotalMealsNumber: 40
-    MaxMealsInOneOrder: 3
-    CustomersCount: 20
+    NumberOfBoosts: 0
+    TimeInSeconds: 0
+    TotalMealsNumber: 0
+    MaxMealsInOneOrder: 0
+    CustomersCount: 0
     OrderStrings: []
     _orders: []
 --- !u!4 &588743296
@@ -598,8 +597,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 670421624}
-  - component: {fileID: 670421626}
   - component: {fileID: 670421627}
+  - component: {fileID: 670421631}
+  - component: {fileID: 670421630}
+  - component: {fileID: 670421629}
+  - component: {fileID: 670421628}
   m_Layer: 0
   m_Name: LevelGUI
   m_TagString: Untagged
@@ -622,29 +624,6 @@ Transform:
   m_Father: {fileID: 1395461787}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &670421626
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 670421623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29bcb39e961cad24c8882c9565b2c6e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _levelTimerID: LevelTimer
-  _customersNumberID: CustomerCount
-  _openMenuButtonID: PauseButton
-  _menuID: Menu
-  _menuHeaderID: MenuHeader
-  _continueButtonID: Continue
-  _getBoostButtonID: GetBoost
-  _restartButtonID: RestartButton
-  _quitButtonID: QuitButton
-  _useBoostButtonID: GetFixButton
-  _boostCounterID: BoostsCounter
 --- !u!114 &670421627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,6 +640,69 @@ MonoBehaviour:
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 2ff448756eac06c488d7c9f7250eaee0, type: 3}
   m_SortingOrder: 0
+--- !u!114 &670421628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670421623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a84b2e29e304b31ae4ca9491bf469cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enableOnStart: 1
+  _levelTimerID: LevelTimer
+--- !u!114 &670421629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670421623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c87ef86cc3b4ef3801589c2862396cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enableOnStart: 1
+  _openMenuButtonID: PauseButton
+  _menuID: Menu
+  _menuHeaderID: MenuHeader
+  _continueButtonID: Continue
+  _getBoostButtonID: GetBoost
+  _restartButtonID: RestartButton
+  _quitButtonID: QuitButton
+--- !u!114 &670421630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670421623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52ca0700ba0c48c6a3422d76f274acbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enableOnStart: 1
+  _customersNumberID: CustomerCount
+--- !u!114 &670421631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 670421623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df24509419a34808aee8890885e8067b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _enableOnStart: 1
+  _useBoostButtonID: GetFixButton
+  _boostCounterID: BoostsCounter
 --- !u!1 &790584184
 GameObject:
   m_ObjectHideFlags: 0
@@ -706,6 +748,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c00ff7f6fa8fc846b94c7b03ec5bbce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enableOnStart: 1
   MenuRootID: MainMenu
   StartLevelButtonID: StartLevelButton
 --- !u!114 &790584188
@@ -1286,7 +1329,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _mainMenuGUI: {fileID: 790584187}
-  _levelGUI: {fileID: 670421626}
+  _boostsGUI: {fileID: 670421631}
+  _customerCounterGUI: {fileID: 670421630}
+  _menuGUI: {fileID: 670421629}
+  _timerGUI: {fileID: 670421628}
 --- !u!1 &1494583864
 GameObject:
   m_ObjectHideFlags: 0

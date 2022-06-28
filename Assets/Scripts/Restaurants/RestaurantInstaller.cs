@@ -16,8 +16,8 @@ namespace Restaurants
         public override void InstallBindings()
         {
             ClearSpawnTransforms();
-            Container.Bind<OrderManager>().AsSingle();
-            Container.Bind<Restaurant>().AsSingle().WithArguments(_customerSpotHolder);
+            
+            Container.BindInterfacesAndSelfTo<Restaurant>().AsSingle().WithArguments(_customerSpotHolder);
             Container.BindFactory<Customer, Customer.Factory>().FromComponentInNewPrefab(_prefabs.Customer)
                 .WithGameObjectName("Customer");
 

@@ -1,7 +1,5 @@
-using System;
 using _Extensions;
 using Game;
-using Game.Data.Levels;
 using GUI;
 using Restaurants.Customers.Orders;
 using UnityEngine;
@@ -13,20 +11,20 @@ namespace Restaurants.Customers
     {
         [SerializeField] private Transform _customersSpawnRoot;
         private Customer.Factory _customerFactory;
+        private CustomerManager _customerManager;
         private Vector3 _customerSpawnLocation;
         private CustomerOrderGUI _orderGUI;
         private OrderManager _orderLevelManager;
-        private LevelManager _levelLevelManager;
 
         [Inject]
-        public void Construct(Restaurant restaurant, LevelManager levelManager, OrderManager orderManager, Customer.Factory customerFactory)
+        public void Construct(CustomerManager customerManager, OrderManager orderManager, Customer.Factory customerFactory)
         {
-            _levelLevelManager = levelManager;
+            _customerManager = customerManager;
             _orderLevelManager = orderManager;
             _customerFactory = customerFactory;
         }
 
-        public void Init(Vector3 position, Vector3 customerSpawnLocation)
+        public void StartLevel(Vector3 position, Vector3 customerSpawnLocation)
         {
             transform.position = position;
             _customerSpawnLocation = customerSpawnLocation;
@@ -43,11 +41,11 @@ namespace Restaurants.Customers
             if (order == null)
                 return;
 
-            string id = _levelLevelManager.GetCustomerUID();
+            string id = _customerManager.GetCustomerUID();
             if (GameController.ShowDebugLogs)
                 Debug.LogFormat($"Spawning customer {id} with order: {order.PresetSO.UID}");
-
-            void OnArriveEvent() => _orderLevelManager.ActivateOrder(order);
+            
+            void OnArriveEvent() { _orderLevelManager.ActivateOrder(order); }
             var customer = _customerFactory.Create();
             customer.Init(id, _customersSpawnRoot, _customerSpawnLocation, transform.position, OnArriveEvent);
             order.OnOrderFulfilled += customer.MoveToExit;

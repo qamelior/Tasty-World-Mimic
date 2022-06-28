@@ -44,3 +44,5 @@ MonoBehaviour:
     MealSource: {fileID: 2968472729661021431, guid: 55ca1db9ca913274ba5fa379b9454e81, type: 3}
     CustomerSpot: {fileID: 5150928068396197209, guid: 7f5be063b0dfe9b44b6807fd2a03503b, type: 3}
     Customer: {fileID: 5150928068396197209, guid: 524e357b9466d0846b5c877e96011c42, type: 3}
+  Orders:
+    ServedFood: {fileID: 11400000, guid: 5e0c49a2d93669e46a2bb318542af7fc, type: 2}

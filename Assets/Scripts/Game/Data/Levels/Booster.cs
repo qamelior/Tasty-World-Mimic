@@ -1,5 +1,6 @@
 ﻿using System;
 using GUI;
+using GUI.Level;
 using Restaurants;
 using Restaurants.Customers.Orders;
 using UniRx;
@@ -12,21 +13,21 @@ namespace Game.Data.Levels
         private readonly ReactiveProperty<int> _boostsNumber;
         private readonly OrderManager _orderManager;
         
-        public Booster(LevelManager levelManager, OrderManager orderManager, LevelGUI levelGUI)
+        public Booster(LevelManager levelManager, OrderManager orderManager, MenuGUI menuGUI, BoostsGUI boostsGUI)
         {
             _boostsNumber = new ReactiveProperty<int>();
-            _boostsNumber.Subscribe(levelGUI.UpdateNumberOfBoosts);
+            _boostsNumber.Subscribe(boostsGUI.UpdateNumberOfBoosts);
             _orderManager = orderManager;
             _orderManager.OnOrderBoosted += OnBoostActionCompleted;
             levelManager.OnLevelStarted += StartLevel;
             
-            levelGUI.OnGetBoostClick += GetNewBoost;
-            levelGUI.OnSpendBoostClick += TrySpendBoost;
+            menuGUI.OnGetBoostClick += GetNewBoost;
+            boostsGUI.OnSpendBoostClick += TrySpendBoost;
         }
 
         public void Initialize() { }
 
-        private void StartLevel(EntryData data)
+        private void StartLevel(LevelDataEntry data)
         {
             _boostsNumber.Value = data.NumberOfBoosts;
         }
@@ -36,7 +37,7 @@ namespace Game.Data.Levels
         private void TrySpendBoost()
         {
             if (_boostsNumber.Value <= 0) return;
-            _orderManager.TryCompleteOldestOrder();
+            _orderManager.CompleteOldestOrder();
         }
 
         private void OnBoostActionCompleted() { _boostsNumber.Value -= 1; }

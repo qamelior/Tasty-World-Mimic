@@ -1,4 +1,6 @@
 using Game.Data.Levels;
+using Restaurants.Customers;
+using Restaurants.Customers.Orders;
 using Zenject;
 
 namespace Game
@@ -8,6 +10,8 @@ namespace Game
         public override void InstallBindings()
         {
             Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<CustomerManager>().AsSingle();
+            Container.Bind<OrderManager>().AsSingle();
             InstallLevelTools();
         }
 

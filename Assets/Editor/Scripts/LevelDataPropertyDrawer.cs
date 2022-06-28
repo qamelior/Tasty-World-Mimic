@@ -5,7 +5,7 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 #if UNITY_EDITOR
-[CustomPropertyDrawer(typeof(EntryData))]
+[CustomPropertyDrawer(typeof(LevelDataEntry))]
 public class LevelDataPropertyDrawer : PropertyDrawer
 {
     private VisualElement _randomLevelGroup;
@@ -59,7 +59,7 @@ public class LevelDataPropertyDrawer : PropertyDrawer
 
     private void ShowContextFields(int enumValueIndex)
     {
-        bool isFixed = enumValueIndex == (int)EntryData.LevelType.Fixed;
+        bool isFixed = enumValueIndex == (int)LevelDataEntry.LevelType.Fixed;
         _fixedLevelGroup.SetVisibility(isFixed);
         _randomLevelGroup.SetVisibility(!isFixed);
     }

@@ -11,7 +11,7 @@ namespace Game.Data.Levels
         private const string FileName = "TastyLevel_";
         [SerializeField] private FoodCollection _foodCollection;
         [SerializeField] private TextAsset _selectedFile;
-        [SerializeField] private EntryData _entryData;
+        [SerializeField] private LevelDataEntry _entryData;
         public bool EditMode { private set; get; }
         public TextAsset SelectedFile => _selectedFile;
         public string FakePath => $"Resources/{LevelsFolderPath}";
@@ -21,7 +21,7 @@ namespace Game.Data.Levels
         public void CreateNewFile(bool editFile = true, bool selectFile = true)
         {
             string uniqueName = PickFileName();
-            _entryData = new EntryData();
+            _entryData = new LevelDataEntry();
             WriteJSONFile(uniqueName);
 #if UNITY_EDITOR
             AssetDatabase.Refresh();
@@ -84,11 +84,11 @@ namespace Game.Data.Levels
             writer.Write(JsonConvert.SerializeObject(_entryData));
         }
 
-        public static bool GetLevelDataFromJSON(TextAsset file, ref EntryData data, FoodCollection foodCollection)
+        public static bool GetLevelDataFromJSON(TextAsset file, ref LevelDataEntry data, FoodCollection foodCollection)
         {
             if (file == null) return false;
 
-            data = JsonConvert.DeserializeObject<EntryData>(file.text);
+            data = JsonConvert.DeserializeObject<LevelDataEntry>(file.text);
             data.DeserializeMeals(foodCollection);
             return true;
         }
@@ -98,7 +98,7 @@ namespace Game.Data.Levels
             var file = Resources.Load<TextAsset>(path);
             if (file == null)
                 return false;
-            _entryData = JsonConvert.DeserializeObject<EntryData>(file.text);
+            _entryData = JsonConvert.DeserializeObject<LevelDataEntry>(file.text);
             return true;
         }
     }
