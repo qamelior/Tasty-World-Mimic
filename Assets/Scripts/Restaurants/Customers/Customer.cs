@@ -10,19 +10,24 @@ namespace Restaurants.Customers
     public class Customer : MonoBehaviour
     {
         [SerializeField] private TextMeshPro _idLabelRef;
-        private GameController _gameController;
         private Action _onArrive;
         private Settings _settings;
         private Vector3 _spawnLocation;
         private Vector3 _spotLocation;
         private State _state;
-
+        private bool _isMoving;
         [Inject]
         public void Construct(GameController gameController, Settings settings)
         {
-            _gameController = gameController;
+            gameController.SubscribeToGameStateChange(UpdateMoveState);
             _settings = settings;
         }
+
+        private void UpdateMoveState(GameController.GameStates gameState)
+        {
+            _isMoving = gameState == GameController.GameStates.Playing;
+        }
+
 
         public void Init(string id, Transform parent, Vector3 origin, Vector3 destination, Action onArrive)
         {
@@ -43,7 +48,7 @@ namespace Restaurants.Customers
             var origin = transform.position;
             while (t < moveDuration)
             {
-                if (!_gameController.GameIsPaused)
+                if (_isMoving)
                 {
                     transform.position = Vector3.Lerp(origin, destination, lerpSpeedMod * t);
                     t += Time.deltaTime;

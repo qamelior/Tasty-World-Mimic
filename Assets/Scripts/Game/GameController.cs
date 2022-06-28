@@ -1,22 +1,28 @@
 using System;
-using Game.Data.Levels;
 using GUI;
 using GUI.Level;
+using UniRx;
 using UnityEditor;
 using UnityEngine;
-using Zenject;
 
 namespace Game
 {
-    public class GameController : ITickable
+    public class GameController
     {
+        public enum GameStates
+        {
+            MainMenu,
+            Playing,
+            Menu,
+            Count
+        }
+
         public const bool ShowDebugLogs = true;
-        private GameStates _currentGameState;
-        private Action<float> _onTimePassed;
+        private readonly ReactiveProperty<GameStates> _state;
 
         public GameController(MainMenuGUI mainMenuUI, MenuGUI menuGUI)
         {
-            _currentGameState = GameStates.MainMenu;
+            (_state = new ReactiveProperty<GameStates>()).Value = GameStates.MainMenu;
             mainMenuUI.OnStartClick += () => ChangeGameState(GameStates.Playing);
             menuGUI.OnQuitClick += Quit;
             menuGUI.OnRestartClick += () => ChangeGameState(GameStates.Playing);
@@ -24,18 +30,7 @@ namespace Game
                 ChangeGameState(mode == MenuGUI.MenuMode.Closed ? GameStates.Playing : GameStates.Menu);
         }
 
-        public bool GameIsPaused => _currentGameState != GameStates.Playing;
-
-        public void Tick()
-        {
-            if (_currentGameState == GameStates.Playing)
-                _onTimePassed?.Invoke(Time.deltaTime);
-        }
-
-        public event Action<float> OnTimePassed { add => _onTimePassed += value; remove => _onTimePassed -= value; }
-
-
-        public void Quit()
+        private void Quit()
         {
 #if UNITY_EDITOR
             EditorApplication.isPlaying = false;
@@ -48,15 +43,12 @@ namespace Game
         {
             if (ShowDebugLogs)
                 Debug.Log($"Game state: {newState}");
-            _currentGameState = newState;
+            _state.Value = newState;
         }
 
-        private enum GameStates
+        public void SubscribeToGameStateChange(Action<GameStates> evt)
         {
-            MainMenu,
-            Playing,
-            Menu,
-            Count
+            _state.Subscribe(evt);
         }
     }
 }
