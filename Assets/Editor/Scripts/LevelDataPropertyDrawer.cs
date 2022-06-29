@@ -1,7 +1,6 @@
 using _Extensions;
 using Game.Data.Levels;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 #if UNITY_EDITOR
@@ -22,11 +21,11 @@ public class LevelDataPropertyDrawer : PropertyDrawer
             }
         };
         
-        container.Add(new PropertyField(property.FindPropertyRelative("NumberOfBoosts")));
-        container.Add(new PropertyField(property.FindPropertyRelative("TimeInSeconds")));
+        container.Add(new UnityEditor.UIElements.PropertyField(property.FindPropertyRelative("NumberOfBoosts")));
+        container.Add(new UnityEditor.UIElements.PropertyField(property.FindPropertyRelative("TimeInSeconds")));
         
         var typeEnum = property.FindPropertyRelative("Type");
-        var typeField = new PropertyField(typeEnum);
+        var typeField = new UnityEditor.UIElements.PropertyField(typeEnum);
         typeField.RegisterValueChangeCallback(evt => ShowContextFields(evt.changedProperty.enumValueIndex));
         container.Add(typeField);
 
@@ -44,16 +43,16 @@ public class LevelDataPropertyDrawer : PropertyDrawer
     private VisualElement CreateRandomGroup(SerializedProperty property)
     {
         var container = new VisualElement();
-        container.Add(new PropertyField(property.FindPropertyRelative("CustomersCount")));
-        container.Add(new PropertyField(property.FindPropertyRelative("TotalMealsNumber")));
-        container.Add(new PropertyField(property.FindPropertyRelative("MaxMealsInOneOrder")));
+        container.Add(new UnityEditor.UIElements.PropertyField(property.FindPropertyRelative("CustomersCount")));
+        container.Add(new UnityEditor.UIElements.PropertyField(property.FindPropertyRelative("TotalMealsNumber")));
+        container.Add(new UnityEditor.UIElements.PropertyField(property.FindPropertyRelative("MaxMealsInOneOrder")));
         return container;
     }
     
     private VisualElement CreateFixedGroup(SerializedProperty property)
     {
         var container = new VisualElement();
-        container.Add(new PropertyField(property.FindPropertyRelative("_orders")));
+        container.Add(new UnityEditor.UIElements.PropertyField(property.FindPropertyRelative("_orders")));
         return container;
     }
 

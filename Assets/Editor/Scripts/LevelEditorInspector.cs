@@ -2,12 +2,11 @@ using _Extensions;
 using Game.Data;
 using Game.Data.Levels;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
 #if UNITY_EDITOR
 [CustomEditor(typeof(EntryEditor))]
-public class LevelEditorInspector : UIToolkitEditorBase
+public class LevelEditorInspector : Editor
 {
     private EntryEditor _editor;
     private const string NewFileButtonID = "CreateNewLevel";
@@ -18,17 +17,23 @@ public class LevelEditorInspector : UIToolkitEditorBase
     private const string SerializedLevelDataBlockID = "SelectedLevelInspector";
     private const string MealCollectionSelectorID = "FoodCollectionSelector";
 
-    public override VisualElement CreateInspectorGUI()
+    private VisualTreeAsset _inspectorXML;
+    private VisualElement _inspector;
+
+    public VisualElement CreateInspectorGUI()
     {
-        base.CreateInspectorGUI();
+        _inspector = new VisualElement();
+        if (_inspectorXML == null)
+            _inspectorXML = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Editor/LevelEditor.uxml");
+        _inspectorXML.CloneTree(_inspector);
         
         _editor = (EntryEditor)target;
         _editor.ValidateEditMode();
 
         _inspector.RegisterButtonEvent(NewFileButtonID, evt => _editor.CreateNewFile());
-        _inspector.FindVisualElement<ObjectField>(SelectedObjectFieldID)
+        _inspector.FindVisualElement<UnityEditor.UIElements.ObjectField>(SelectedObjectFieldID)
             ?.RegisterValueChangedCallback(evt => OnSelectedAssetChanged());
-        _inspector.FindVisualElement<ObjectField>(MealCollectionSelectorID)?.SetType(typeof(FoodCollection));
+        _inspector.FindVisualElement<UnityEditor.UIElements.ObjectField>(MealCollectionSelectorID)?.SetType(typeof(FoodCollection));
         _inspector.FindVisualElement<TextField>(FakeFolderPathID)?.SetText(_editor.FakePath);
         
         UpdateEditModeVisuals();
